@@ -32,7 +32,7 @@ def bin(request, binId):
     bin = models.Bin.objects.get(id=int(binId, 36))
     if bin.videos.count() > 0:
         video = bin.videos.all()[0]
-        return HttpResponseRedirect(video.pageLink())
+        return HttpResponseRedirect(video.get_absolute_url())
     context = RequestContext(request, {'bin': bin})
     return render_to_response('bin.html', context)
 
@@ -49,7 +49,7 @@ def opml(request, binId):
     docs.text = "http://www.opml.org/spec2"
     body = ET.SubElement(opml, "body")
     outline = ET.SubElement(body, "outline")
-    outline.attrib['xmlUrl'] = request.build_absolute_uri(bin.get_absolute_url() + ".xml")
+    outline.attrib['xmlUrl'] = bin.atomLink()
     outline.attrib['type'] = 'atom'
     outline.attrib['text'] = bin.title
     f = u'''<?xml version="1.0" encoding="utf-8"?>\n''' + ET.tostring(opml)
@@ -61,13 +61,13 @@ def atom_entry(video):
     title.text = video.title
     link = ET.SubElement(entry, "link")
     link.attrib['rel'] = 'alternate'
-    link.attrib['href'] = video.pageLink()
+    link.attrib['href'] = video.get_absolute_url()
     updated = ET.SubElement(entry, "updated")
     updated.text = video.updated.strftime("%Y-%m-%dT%H:%M:%SZ")
     published = ET.SubElement(entry, "published")
     published.text = video.created.strftime("%Y-%m-%dT%H:%M:%SZ")
     el = ET.SubElement(entry, "id")
-    el.text = video.pageLink()
+    el.text = video.get_absolute_url()
     '''
     el = ET.SubElement(entry, "media:thumbnail")
     el.attrib['url'] = absolute_url(self.stillLink)
@@ -141,12 +141,12 @@ def atom(request, binId):
     link = ET.SubElement(feed, "link")
     link.attrib['rel'] = 'self'
     link.attrib['type'] = 'application/atom+xml'
-    link.attrib['href'] = request.build_absolute_uri(bin.get_absolute_url() + ".xml")
+    link.attrib['href'] = bin.atomLink()
     rights = ET.SubElement(feed, 'rights')
     rights.attrib['type'] = 'text'
     rights.text = "No Copyright"
     el = ET.SubElement(feed, 'id')
-    el.text = request.build_absolute_uri(bin.get_absolute_url() + ".xml")
+    el.text = bin.atomLink()
     updated = ET.SubElement(feed, "updated")
     updated.text = bin.updated.strftime("%Y-%m-%dT%H:%M:%SZ")
 

@@ -65,9 +65,6 @@ class Video(models.Model):
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.bin.title)
 
-    def get_absolute_url(self):
-        return "%s/%s" % (self.bin.get_absolute_url(), to36(self.id))
-
     def save_chunk(self, chunk, name='video.ogv'):
         if not self.done:
             if not self.file:
@@ -85,20 +82,23 @@ class Video(models.Model):
         print "why is this"
         return True
 
-    def pageLink(self):
-        url = "%s.html" % self.get_absolute_url()
+    def linkBase(self):
+        return "%s/%s" % (self.bin.get_absolute_url(), to36(self.id))
+
+    def get_absolute_url(self):
+        url = "%s.html" % self.linkBase()
         return absolute_url(url)
 
     def editLink(self):
-        url = "%s.edit" % self.get_absolute_url()
+        url = "%s.edit" % self.linkBase()
         return absolute_url(url)
 
     def torrentLink(self):
-        url = "%s.torrent" % self.get_absolute_url()
+        url = "%s.torrent" % self.linkBase()
         return absolute_url(url)
 
     def videoLink(self):
-        url = "%s.ogg" % self.get_absolute_url()
+        url = "%s.ogg" % self.linkBase()
         return absolute_url(url)
 
     def staticVideoLink(self):
@@ -106,7 +106,7 @@ class Video(models.Model):
         return absolute_url(self.file.url)
 
     def embedElement(self):
-        url = "%s.iframe.html" % self.get_absolute_url()
+        url = "%s.iframe.html" % self.linkBase()
         url = absolute_url(url)
         embed = '<iframe src="%s" width="%s" height="%s" frameborder="0" scrolling="no"></iframe>' % \
                 (url, self.displayWidth(), self.displayHeight())
