@@ -80,7 +80,7 @@
     <div class="yui-b">
       <ul id="videobin">
         <li py:for="v in bin.videos">
-          <a href="{{v.pageLink}}" py:if="video != v">{{v.title}}</a>
+          <a href="{{v.get_absolute_url}}" py:if="video != v">{{v.title}}</a>
           <span py:if="video == v" id="selectedVideo">{{v.title}}</span>
         </li>
       </ul>

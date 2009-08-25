@@ -113,7 +113,7 @@
                 </p>
                 <div>
                   <b>URL:</b>
-                  <input type="text" id="urlLink" value="{{video.pageLink}}" />
+                  <input type="text" id="urlLink" value="{{video.get_absolute_url}}" />
                 </div>
                 <div>
                   <b>Embed:</b>
@@ -166,7 +166,7 @@
         {% for v in video.bin.videos.all %}
         <li>
           {% ifnotequal v video %}
-          <a href="{{v.pageLink}}">{{v.title}}</a>
+          <a href="{{v.get_absolute_url}}">{{v.title}}</a>
           {% else %}
           <span id="selectedVideo">{{v.title}}</span>
           {% endifnotequal %}
