@@ -72,7 +72,7 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
     ' <param name="showStatus" value="hide" /> '+
     ' <param name="bufferSize" value="200" /> '+
     ' <param name="autoPlay" value="' + autoplay + '" /> '+
-    ' <strong>Your browser does not have a Java Plug-in. <a href="http://java.com/download">Get the latest Java Plug-in here</a>.</strong>' +
+    ' <strong>Your browser does not support HTML5 Video. Get a modern browser like <a href="http://www.mozilla.com/firefox">Firefox 3.5</a>.</strong>' +
     '</object>';
     f = document.createTextNode('');
     element.appendChild(f);
@@ -200,7 +200,7 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
     element.style.height = height;
     element.style.background = '#ddd';
     notice = document.createTextNode('');
-    element.innerHTML = '<div style="height:100%;padding:10%;padding-top:30%;">Your browser does not have a Java Plug-in. <a href="http://java.com/download">Get the latest Java Plug-in here</a>.</div>';
+    element.innerHTML = '<div style="height:100%;padding:10%;padding-top:30%;">Your browser does not support HTML5 Video. Get a modern browser like <a href="http://www.mozilla.com/firefox">Firefox 3.5</a>.</div>';
     element.appendChild(notice);
   }
   return element;
