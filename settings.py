@@ -98,7 +98,7 @@ FILE_UPLOAD_HANDLERS = ('videobin.middleware.UploadProgressCachedHandler.UploadP
 
 
 SESSION_COOKIE_NAME = "vbk"
-SESSION_COOKIE_AGE = 8640000
+SESSION_COOKIE_AGE = 86400000
 
 #videobin related settings
 CONTACT_EMAIL="feedback@videobin.org"
