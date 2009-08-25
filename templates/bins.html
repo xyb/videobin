@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Your VideoBins</title>
+<script src="/static/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#email_address').change(function(){
+    $.getJSON('/settings', {email_address: this.value}, function(data) { 
+      if(!data.result) { $('#email_address').addClass('invalidInput');}
+      else { $('#email_address').removeClass('invalidInput');}
+    });
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+    <h1>Your VideoBins</h1>
+    {% if bins %}
+    <ul>
+        {% for b in bins %}
+        <li><a href="{{b.get_absolute_url}}">{{b.title}} ({{b.videoInfo}})</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    You already uploaded videos? If not you can <a href="/">do that now</a>.<br />
+    If you did, enter your email to recover your account:<br />
+    <form action="/recover/post" method="POST">
+        <input value="{{settings.email_address}}" name="email" /><input type="submit" value="recover" />
+    </form>
+    {% endif %}
+    <div id="userSettings" py:if="videobins">
+        Your email address: <input id="email_address" value="{{settings.email_address}}" /><br />
+        (allows you to recover access to your videos)
+    </div>
+
+{% endblock %}
+

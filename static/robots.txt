@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Request-rate: 1/5         # maximum rate is one page every 5 second

@@ -1,0 +1,74 @@
+body {
+  padding: 10px;
+  background-color: #fff;
+  color: #000;
+}
+
+.code {
+  font-family: monospace;
+}
+
+span.code {
+  font-weight: bold;
+  background: #eee;
+}
+
+#ft {
+  margin-top: 8px;
+}
+
+a.link, a, a.active {
+  color: #369;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+.progress_highlight {
+  font-weight: bold;
+}
+#progressbar_bar {
+  border:1px solid #eee;
+  height:20px;
+  width:400px;
+}
+#progressbar_fill {
+  background-color: #666;
+  height:20px;
+  float:left;
+}
+#progressbar_fill p {
+  text-align: center; 
+  color: white; 
+  padding: 0; 
+  margin: 0;
+}
+
+#progressbar {
+  width:402px;
+  margin-left: auto; 
+  margin-right: auto; 
+}
+
+#settings {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 8px;
+  background-color: #ddd;
+  width: 466px;
+}
+
+#userSettings {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 8px;
+  background-color: #ddd;
+  width: 320px;
+  margin-left: auto; 
+  margin-right: auto; 
+}
+.invalidInput {
+  background-color: #f00;
+}
+

@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load videobin %}
+
+{% block head %}
+  <title>{{video.title}}</title>
+  <link rel="alternate" type="application/atom+xml" title="{{video.bin.title}}" href="{{video.bin.atomLink}}">
+  <style>
+  #embedLink {
+    width: 428px;
+    border: 1px solid #ddd;
+  }
+  #urlLink {
+    width: 446px;
+    border: 1px solid #ddd;
+    margin-bottom: 2px;
+    margin-top: 2px;
+  }
+  #title {
+    margin: 0;
+    font-size: 24px;
+  }
+  #description {
+    width: 480px;
+    padding-bottom: 8px;
+  }
+  #binTitle {
+    margin: 0;
+  }
+  #videobin {
+    padding-top: 64px;
+  }
+  textarea {
+    width: 480px;
+    height: 192px;
+  }
+  #formatInfo {
+    padding-top: 8px;
+  }
+  #uploadInfo {
+    padding-bottom: 8px;
+  }
+  </style>
+  <script src="/static/js/jquery.js" type="text/javascript"></script>
+  <script src="/static/js/jquery.editable.js" type="text/javascript"></script>
+  <script src="/static/js/miro.js" type="text/javascript"></script>
+  <script src="/static/js/progressbar.js" type="text/javascript"></script>
+  <script type="text/javascript">var add_url = '{{"/add"|with_domain}}';</script>
+  <script src="/static/js/firefogg.js" type="text/javascript"></script>
+  {% if canAddVideo %}
+  <script type="text/javascript">
+    var saving_html = "<img src='/static/images/loading.gif'>";
+    $(document).ready(function() {
+      $(".edit_inline").editable("{{video.editLink}}", 
+        { saving: saving_html, submitButton: true
+        });
+      $("#title").editable("{{video.editLink}}", 
+        { saving: saving_html, submitButton: true,
+          callback: function() { 
+              document.title = $('#title').text();
+              $('#selectedVideo').text($('#title').text());
+          }
+        });
+      $(".edit_inline, #title, .edit_inline_area").attr('title', 'Click to edit').css('cursor', 'pointer');;
+      $(".edit_inline_area").editable("{{video.editLink}}", 
+        { saving: saving_html, type: 'textarea'}
+       );
+      $('#writeable').change(function() { 
+         var checked = this.checked?'1':'0';
+         jQuery.getJSON('{{video.editLink}}', {writeable: checked});
+       });
+       $('#embedLink').click(function(){this.select();})
+       $('#urlLink').click(function(){this.select();})
+       $('#removeVideo').click(function(){
+         if(confirm("Are you sure you want to remove this video?\nThis action can not be undone.")) {
+            $('#removeVideoSubmit').submit();
+         }
+       });
+
+    });
+  </script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div id="doc" class="yui-t1"> 
+    <div id="bd"> 
+      <div id="yui-main"> 
+        <div class="yui-b"><div class="yui-g"> 
+            <div id="binTitle" class="edit_inline">{{video.bin.title}}</div>
+            <div id="title">{{video.title}}</div>
+            {% ifnotequal video.description "Add Description"  %}
+                <p class="edit_inline_area" id="description">{{video.description|safe}}</p>
+            {% else %}
+                {% if canAddVideo  %}
+                    <p class="edit_inline_area" id="description">{{video.description|safe}}</p>
+                {% endif %}
+            {% endifnotequal %}
+            <div id="video">
+              {{video.embedElement|safe}}
+            </div>
+            {% if video.formatInfoHtml  %}
+            <div>
+            <p id="formatInfo">{{video.formatInfoHtml|safe}}</p>
+            <p id="uploadInfo">Uploaded: {{video.created|format_since}} .:. Last Updated: {{video.updated|format_since}} <span py:if="video.viewed">.:. Viewed: {{video.viewed}}</span></p>
+            <div id="links">
+                <p>
+                  <b>Download Video:</b> 
+                  <a href="{{video.torrentLink}}">Torrent</a>,
+                  <a href="{{video.videoLink}}">Direct Link</a>
+                </p>
+                <p>
+                  <b>Subscribe</b>: <a href="{{video.bin.atomLink}}">Atom Feed</a>, <a href="{{video.bin.miroLink}}">Subscribe Miro</a>
+                </p>
+                <div>
+                  <b>URL:</b>
+                  <input type="text" id="urlLink" value="{{video.pageLink}}" />
+                </div>
+                <div>
+                  <b>Embed:</b>
+                  <input type="text" id="embedLink" value="{{video.embedElement}}" />
+                </div>
+            </div>
+          </div>
+            {% endif %}
+          </div>
+{% if ownsBin %}
+        <div id="settings"><b>Settings:</b><br />
+            <ul>
+            <li>
+{% if video.bin.writeable %}
+             <input type="checkbox" checked="checked" id="writeable" />
+{% else %}
+             <input type="checkbox" id="writeable" />
+{% endif %}
+             Allow others to edit video titles and descriptions and add videos to this bin.
+            </li>
+            <li style="text-align: center">
+              <form id="removeVideoSubmit" action="{{video.get_absolute_url}}.remove" method="POST">
+               <input type="button" id="removeVideo" value="Remove this video" />
+              </form>
+            </li>
+            </ul>
+        </div>
+{% endif %}
+{% if canAddVideo %}
+        <div style="width:420px">
+          Upload Video:
+          <form id="addVideo" action="/add" method="POST" enctype="multipart/form-data">
+           <input type="hidden" name="bin" value="{{video.bin.hID}}" />
+           <input id="videoFile" name="videoFile" type="file" value="Select File.." />
+           <input id="addVideoSubmit" type="submit" value="Upload" />
+          </form>
+          <form id="firefogg" style="display:none">
+           <input type="hidden" name="bin" value="{{video.bin.hID}}" />
+           <input id="selectVideo" type="button" value="Select File.." />
+           <input id="submitVideo" type="button" value="Upload" />
+          </form>
+          <div id='progressbar' style='display: none'/>
+        </div>
+        </div>
+{% endif %}
+      </div> 
+    </div>
+    <div class="yui-b">
+      <ul id="videobin">
+        {% for v in video.bin.videos.all %}
+        <li>
+          {% ifnotequal v video %}
+          <a href="{{v.pageLink}}">{{v.title}}</a>
+          {% else %}
+          <span id="selectedVideo">{{v.title}}</span>
+          {% endifnotequal %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div> 
+  </div>
+{% if video.encoding %}
+<script>
+  setTimeout("window.location.reload();",30000);
+</script>
+{% endif %}
+{% endblock %}
+

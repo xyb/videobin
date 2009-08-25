@@ -1,0 +1,181 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+# Written 2009 by j@mailb.org
+
+import os
+from os.path import basename, splitext, dirname, exists, join
+
+from django.core.cache import cache
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django import forms
+from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
+from django.utils import simplejson
+from oxlib import stripTags
+
+import models
+
+from videobin.utils.shortcuts import render_to_json_response 
+
+
+def get_video_or_404(binId, videoId):
+    #FIXME: check that video belongs to bin
+    return get_object_or_404(models.Video, pk=int(videoId, 36))
+
+def view(request, binId, videoId):
+    video = get_video_or_404(binId, videoId)
+    ownsBin = (request.session.session_key == video.bin.user_key)
+    canAddVideo = (video.bin.writeable or ownsBin)
+    context = RequestContext(request, {'video': video, 'ownsBin': ownsBin, 'canAddVideo': canAddVideo})
+    return render_to_response('video.html', context)
+
+def iframe(request, binId, videoId):
+    video = get_video_or_404(binId, videoId)
+    context = RequestContext(request, {'video': video})
+    return render_to_response('iframe.html', context)
+
+def video(request, binId, videoId):
+    video = get_video_or_404(binId, videoId)
+    video.views.create()
+    return HttpResponseRedirect(video.staticVideoLink())
+
+def torrent(request, binId, videoId):
+    video = get_video_or_404(binId, videoId)
+    response = HttpResponse(video.torrent, mimetype="application/x-bittorrent")
+    response['Content-Type'] = "application/x-bittorrent"
+    torrentName = video.downloadFilename().encode('utf-8') + '.torrent'
+    response['Content-Disposition'] = 'attachement; filename="%s"' % torrentName
+    return response
+
+def edit(request, binId, videoId):
+    video = get_video_or_404(binId, videoId)
+    ownsBin = (request.session.session_key == video.bin.user_key)
+    canEditVideo = (video.bin.writeable or ownsBin)
+
+    def render_to_text_response(response):
+        return HttpResponse(response, content_type="text/plain")
+
+    if not canEditVideo:
+      response = 'you are not allowd to edit this field'
+      return render_to_text_response(response)
+    response = 'invalid input'
+    if 'title' in request.POST:
+      video.title = stripTags(request.POST['title'])
+      video.save()
+      response = video.title
+    elif 'description' in request.POST:
+      #should do better than that, allow some html here
+      video.description = stripTags(request.POST['description'])
+      video.save()
+      response = video.description.replace('\n', '<br />')
+    elif 'binTitle' in request.POST:
+      video.bin.title = stripTags(request.POST['binTitle'])
+      video.save()
+      response = video.bin.title
+    elif 'writeable' in request.GET:
+      video.bin.writeable = (request.GET['writeable'] == '1')
+      video.bin.save()
+      response = dict(writeable=video.bin.writeable)
+    return render_to_text_response(response)
+
+def remove(request, binId, videoId):
+    user_key = request.session.session_key
+    video = get_video_or_404(binId, videoId)
+    redirect = video.pageLink()
+    if request.method == "POST":
+        if user_key == video.bin.user_key:
+            bin = video.bin
+            video.delete()
+            if bin.videos.count() > 0:
+                redirect = bin.get_absolute_url()
+            else:
+                bin.delete()
+                redirect = '/'
+    return HttpResponseRedirect(redirect)
+
+class VideoChunkForm(forms.Form):
+    chunk = forms.FileField()
+    done = forms.IntegerField(required=False)
+
+def upload(request, binId, videoId):
+    """
+    Return json indicating success if chunk upload
+    """
+    if request.method == 'POST':
+        video = get_video_or_404(binId, videoId)
+        form = VideoChunkForm(request.POST, request.FILES)
+        ownsBin = (request.session.session_key == video.bin.user_key)
+        canEditVideo = (video.bin.writeable or ownsBin)
+        if form.is_valid() and canEditVideo:
+            f = form.cleaned_data['chunk']
+            response = dict(result=1, resultUrl=request.build_absolute_uri(video.pageLink()))
+            if not video.save_chunk(f.read(), f.name):
+                response['result'] = 'failed'
+            elif form.cleaned_data['done']:
+                video.done = True
+                video.save()
+                video.loadMetadata()
+                response['result'] = 1
+                response['done'] = 1
+            print response
+            return render_to_json_response(response)
+    response = dict(result=-1, videoUrl='/')
+    print response
+    return render_to_json_response(response)
+
+def add(request):
+    """
+    Redirect to video page
+    or return json for Firefogg with uploadUrl
+    """
+    #FIXME: user_visit.id
+    user_key = request.session.session_key
+    if request.method == 'POST':
+        bin = None
+        if request.POST.get('bin', None):
+          bin = models.Bin.objects.get(pk=int(request.POST['bin'], 36))
+        if bin:
+            if not bin.writeable and bin.user_key != user_key:
+                bin = None
+
+        if request.POST.get('firefogg', False):
+            binTitle = '___title___'
+            if not bin:
+                bin = models.Bin(title=binTitle, description='', user_key=user_key)
+                bin.save()
+            description = request.POST.get('description', "Add Description")
+            title = request.POST.get('title', binTitle)
+            video = models.Video(title=title, description=description, bin=bin)
+            video.encoding = True
+            video.save()
+            response = dict(result=1, uploadUrl=request.build_absolute_uri("%s.chunk" % video.get_absolute_url()))
+            return render_to_json_response(response)
+        # Save any files that were uploaded (ignoring empty form fields)
+        if 'videoFile' in request.FILES:
+            videoFile = request.FILES['videoFile']
+            binTitle = os.path.splitext(os.path.basename(videoFile.name))[0]
+            if not bin:
+                bin = models.Bin(title=binTitle, description=videoFile.name, user_key=user_key)
+                bin.save()
+            description = request.POST.get('description', "Add Description")
+            title = request.POST.get('title', binTitle)
+            video = models.Video(title=title, description=description, bin=bin)
+            video.save()
+            if os.path.splitext(videoFile.name)[1] in ('.ogg', '.ogv'):
+                video.file.save(videoFile.name, videoFile)
+                video.encoding = False
+            else:
+                video.raw_file.save(videoFile.name, videoFile)
+                video.encoding = True
+            if not video.encoding:
+                video.loadMetadata()
+            if title != videoFile.name:
+              video.title = title
+            video.save()
+            return HttpResponseRedirect(video.pageLink())
+
+    #no upload
+    return HttpResponseRedirect('/')
+

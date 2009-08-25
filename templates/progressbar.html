@@ -1,0 +1,16 @@
+<div>
+{% ifnotequal precents 100 %}
+  <span>{{filename}}</span><br/>
+  <span class="progress_highlight">{{received}}</span> of <span class="progress_highlight">{{size}}</span>
+  at <span class="progress_highlight">{{speed}}</span><br />
+  Time remaining: <span class="progress_highlight">{{eta}}</span><br/>
+{% else %}
+  <strong>Finished: {{filename}}</strong>
+{% endifnotequal %}
+<div id="progressbar_bar">
+  <div id="progressbar_fill" style="width:{{precents}}%">
+    <p>{{precents}}%</p>
+  </div>
+</div>
+</div>
+

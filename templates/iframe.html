@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+    <head>
+      <title>{{video.title}}</title>
+      <script src="/static/js/Ogg.js?4" type="text/javascript"></script>
+      <link rel="stylesheet" type="text/css" href="/static/css/reset-fonts-grids.css"></link>
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+          background: #000;
+          color: #ddd;
+        }
+        #status {
+          padding: 5px;
+          padding-top: 29%;
+          text-align: center;
+        }
+      </style>
+    </head>
+    <body>
+{% if video.encoding %}
+  <div id="status">Please come back later,<br /> video is still being transcoded.<br />
+    {{video.encodingStatus}}
+  </div>
+{% else %}
+  <video src="{{video.videoLink}}" id="video"  width="{{video.displayWidth}}" height="{{video.displayHeight}}" autoplay controls></video>
+{% endif %}
+    </body>
+</html>
+

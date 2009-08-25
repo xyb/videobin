@@ -1,0 +1,6 @@
+To recover your account, click on the link below
+
+{{recover_url}}
+
+let us know if you have any problems recovering your videos,
+VideoBin

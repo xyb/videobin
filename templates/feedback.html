@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>VideoBin Feedback</title>
+<style>
+  #feedback input {
+    width: 360px;
+  }
+  #feedback textarea {
+    width: 360px;
+    height: 160px;
+  }
+</style>
+<script src="/static/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+  function checkSubmit() {
+    if($("#message").val() != 'Message' && $("#email").val() != 'Email') {
+      $('#submit').attr('disabled', false);
+    } else {
+      $('#submit').attr('disabled', true);
+    }
+  }
+  $(document).ready(function() {
+    $("#message").focus(function(){if(this.value == 'Message') this.value = '';checkSubmit();})
+    $("#message").blur(function(){if(this.value == '') this.value = 'Message'; checkSubmit();})
+    $("#email").focus(function(){if(this.value == 'Email') this.value = '';})
+    $("#email").blur(function(){if(this.value == '') this.value = 'Email';checkSubmit();})
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+  <h1>Feedback</h1>
+  <form action="/feedback" method="POST" id="feedback">
+    <input type="text" id="email" name="email" value="Email" /><br />
+    <textarea id="message" name="message">Message</textarea><br />
+    <input type="submit" id="submit" value="Send" disabled="disabled" />
+  </form>
+  Or write us at <a href="mailto:feedback@videobin.org">feedback@videobin.org</a>.
+{% endblock %}
+
+
+
