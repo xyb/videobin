@@ -150,7 +150,7 @@ def add(request):
             video = models.Video(title=title, description=description, bin=bin)
             video.encoding = True
             video.save()
-            response = dict(result=1, uploadUrl=request.build_absolute_uri("%s.chunk" % video.get_absolute_url()))
+            response = dict(result=1, uploadUrl=request.build_absolute_uri("%s.chunk" % video.linkBase()))
             return render_to_json_response(response)
         # Save any files that were uploaded (ignoring empty form fields)
         if 'videoFile' in request.FILES:
