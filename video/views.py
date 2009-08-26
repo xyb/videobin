@@ -83,7 +83,7 @@ def edit(request, binId, videoId):
 def remove(request, binId, videoId):
     user_key = request.session.session_key
     video = get_video_or_404(binId, videoId)
-    redirect = video.pageLink()
+    redirect = video.get_absolute_url()
     if request.method == "POST":
         if user_key == video.bin.user_key:
             bin = video.bin
@@ -110,7 +110,7 @@ def upload(request, binId, videoId):
         canEditVideo = (video.bin.writeable or ownsBin)
         if form.is_valid() and canEditVideo:
             f = form.cleaned_data['chunk']
-            response = dict(result=1, resultUrl=request.build_absolute_uri(video.pageLink()))
+            response = dict(result=1, resultUrl=request.build_absolute_uri(video.get_absolute_url()))
             if not video.save_chunk(f.read(), f.name):
                 response['result'] = 'failed'
             elif form.cleaned_data['done']:
@@ -174,7 +174,7 @@ def add(request):
             if title != videoFile.name:
               video.title = title
             video.save()
-            return HttpResponseRedirect(video.pageLink())
+            return HttpResponseRedirect(video.get_absolute_url())
 
     #no upload
     return HttpResponseRedirect('/')
