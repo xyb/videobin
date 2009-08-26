@@ -137,7 +137,7 @@ class Video(models.Model):
           codec_info = self.audio_codec
 
         info += "%s .:. %s .:. %s" % \
-          (formatDuration(self.duration), formatBytes(self.size),
+          (formatDuration(self.duration, milliseconds=False), formatBytes(self.size),
            codec_info)
         if self.duration < 0 or self.encoding:
           return ''
