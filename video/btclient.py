@@ -183,7 +183,7 @@ def runClient():
       for v in models.Video.objects.filter(seeding=False,encoding=False,encoding_failed=False):
         if DEBUG:
           print "add", v.torrent.path
-        if os.path.exists(v.torrent.path):
+        if v.torrent and os.path.exists(v.torrent.path):
           name = ui.torrentClient.addFile(v.torrent.path)
           #also remove if needed
           #ui.torrentClient.removeByName(name)
