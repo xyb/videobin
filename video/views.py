@@ -119,10 +119,8 @@ def upload(request, binId, videoId):
                 video.loadMetadata()
                 response['result'] = 1
                 response['done'] = 1
-            print response
             return render_to_json_response(response)
     response = dict(result=-1, videoUrl='/')
-    print response
     return render_to_json_response(response)
 
 def add(request):

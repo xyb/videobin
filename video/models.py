@@ -78,8 +78,7 @@ class Video(models.Model):
                 f.write(chunk)
                 f.close()
             return True
-        print "why is this"
-        return True
+        return False
 
     def linkBase(self):
         return "%s/%s" % (self.bin.get_absolute_url(), to36(self.id))
