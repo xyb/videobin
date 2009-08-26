@@ -9,6 +9,6 @@ import models
 
 class VideoAdmin(admin.ModelAdmin):
     search_fields = ['title', 'description']
-    list_display = ('title', 'bin', 'created')
+    list_display = ('title', 'bin', 'created', 'viewed')
 admin.site.register(models.Video, VideoAdmin)
 

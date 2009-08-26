@@ -8,7 +8,7 @@ import models
 
 
 class BinAdmin(admin.ModelAdmin):
-    search_fields = ['title', 'description']
-    list_display = ('title', 'created')
+    search_fields = ['title', 'description', 'videos__title', 'videos__description']
+    list_display = ('title', 'created', 'updated', 'videoInfo')
 admin.site.register(models.Bin, BinAdmin)
 

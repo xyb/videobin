@@ -23,7 +23,7 @@ class VisitIdentity(models.Model):
         db_table = u'visit_identity'
 
 class Bin(models.Model):
-    title = models.TextField(blank=True)
+    title = models.CharField(blank=True, max_length=1000)
     description = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
