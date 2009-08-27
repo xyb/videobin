@@ -1,7 +1,7 @@
 VideoBin
 
 This is a Django (http://www.djangoproject.com) project.
-A development version can be started by running python manage runserver
+A development version can be started by running python manage.py runserver
 
 You need:
   python (2.5 or 2.6)             apt-get install python
