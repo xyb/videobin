@@ -171,6 +171,7 @@ def add(request):
                 video.loadMetadata()
             if title != videoFile.name:
               video.title = title
+            video.done = True
             video.save()
             return HttpResponseRedirect(video.get_absolute_url())
 

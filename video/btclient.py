@@ -180,7 +180,8 @@ def runClient():
     torrentClient(ui)
     models.Video.objects.all().update(seeding=False)
     while True:
-      for v in models.Video.objects.filter(seeding=False,encoding=False,encoding_failed=False):
+      for v in models.Video.objects.filter(seeding=False, done=True,
+                                           encoding=False, encoding_failed=False):
         if DEBUG:
           print "add", v.torrent.path
         if v.torrent and os.path.exists(v.torrent.path):
