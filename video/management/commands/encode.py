@@ -14,7 +14,7 @@ class Command(BaseCommand):
     args = ''
 
     def handle(self, **options):
-        import videobin.video.models
-        for video in videobin.video.models.Video.objects.filter(encoding=True, encoding_failed=False):
+        from videobin.video.models import Video
+        for video in Video.objects.filter(done=True, encoding=True, encoding_failed=False):
             video.encode()
 
