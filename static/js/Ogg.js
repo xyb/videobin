@@ -23,7 +23,6 @@
  *
  * to set cortado location set OggCortadoLocation before including Ogg.js
  */
-
 if (typeof Ogg == "undefined") {
   var Ogg = new Object();
 }
@@ -32,6 +31,7 @@ if (typeof Ogg == "undefined") {
  * check if we are running internet explorer
  */
 Ogg.webkit = ( navigator.vendor && navigator.userAgent.search(/WebKit/) );
+
 Ogg.ie = function() {
   if(this.webkit)
     return false;
@@ -66,11 +66,12 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
     '  width="' + width + '" height="' + height + '">'+
     ' <param name="code" value="com.fluendo.player.Cortado" />'+
     ' <param name="archive" value="' + this.CortadoLocation + '" />'+
+    ' <param name="duration" value="' + video_duration + '" />'+
     ' <param name="url" value="' + url + '" /> '+
     ' <param name="local" value="false" /> '+
     ' <param name="keepAspect" value="false" /> '+
-    ' <param name="video" value="false" /> '+
-    ' <param name="audio" value="false" /> '+
+    ' <param name="video" value="true" /> '+
+    ' <param name="audio" value="true" /> '+
     ' <param name="seekable" value="auto" /> '+
     ' <param name="showStatus" value="hide" /> '+
     ' <param name="bufferSize" value="200" /> '+
@@ -175,6 +176,7 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
       'seekable': 'auto',
       'showStatus': 'hide',
       'autoPlay': autoplay,
+      'duration': video_duration,
       'bufferSize': '200'
     }
     for(name in params){
@@ -210,7 +212,7 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
 };
 
 
-Ogg.load = function() {
+Ogg.init = function() {
   if(typeof(OggCortadoLocation) == 'undefined')
     this.CortadoLocation = '/static/cortado.g08b94fe.jar';
   else
@@ -330,4 +332,4 @@ function oggAddEvent(obj, evType, fn){
    return false; 
  } 
 }
-oggAddEvent(window, 'load', function() { Ogg.load() });
+oggAddEvent(window, 'load', function() { Ogg.init() });
