@@ -217,10 +217,10 @@ Ogg.init = function() {
     this.CortadoLocation = '/static/cortado.g08b94fe.jar';
   else
     this.CortadoLocation = OggCortadoLocation;
-  this.theora = false;
+  this.theora = true;
   if (this.webkit) {
     var video = document.createElement('video');
-	if (video.canPlayType && video.canPlayType("video/ogg;codecs='theora,vorbis'") == 'probabli') {
+	if (video.canPlayType && video.canPlayType("video/ogg;codecs='theora,vorbis'") == 'probably') {
         this.theora = true;
 	} else {
         this.theora = false;
