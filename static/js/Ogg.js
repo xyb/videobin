@@ -31,7 +31,10 @@ if (typeof Ogg == "undefined") {
 /*
  * check if we are running internet explorer
  */
+Ogg.webkit = ( navigator.vendor && navigator.userAgent.search(/WebKit/) );
 Ogg.ie = function() {
+  if(this.webkit)
+    return false;
   return !(navigator.plugins && navigator.plugins.length);
 };
 
@@ -207,21 +210,24 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
 };
 
 
-function detectSafari() {
-  if(navigator.userAgent.indexOf('Safari') > -1) {
-    return true;
-  }
-  return false;
-}
 Ogg.load = function() {
   if(typeof(OggCortadoLocation) == 'undefined')
-    this.CortadoLocation = '/static/cortado.jar';
+    this.CortadoLocation = '/static/cortado.g08b94fe.jar';
   else
     this.CortadoLocation = OggCortadoLocation;
   var VideoElements = document.getElementsByTagName("video");
+  this.theora = false;
+  if (this.webkit) {
+    var video = document.createElement('video');
+	if (video.canPlayType && video.canPlayType("video/ogg;codecs='theora,vorbis'") == 'probabli') {
+        this.theora = true;
+	} else {
+        this.theora = false;
+	}
+  }
   for(i = 0; i < VideoElements.length; i++) {
     var v = VideoElements[i];
-    if(!detectSafari() && v.play) {
+    if(this.theora && v.play) {
       if(v.getAttribute('autoplay')) {
         v.isPlaying = true;
       }
