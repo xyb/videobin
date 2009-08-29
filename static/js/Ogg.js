@@ -215,7 +215,6 @@ Ogg.load = function() {
     this.CortadoLocation = '/static/cortado.g08b94fe.jar';
   else
     this.CortadoLocation = OggCortadoLocation;
-  var VideoElements = document.getElementsByTagName("video");
   this.theora = false;
   if (this.webkit) {
     var video = document.createElement('video');
@@ -225,6 +224,7 @@ Ogg.load = function() {
         this.theora = false;
 	}
   }
+  var VideoElements = document.getElementsByTagName("video");
   for(i = 0; i < VideoElements.length; i++) {
     var v = VideoElements[i];
     if(this.theora && v.play) {
