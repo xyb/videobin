@@ -152,7 +152,7 @@ class Video(models.Model):
             self.encoding = True
             self.save()
             return
-
+        os.chmod(self.file.path,0644)
         d = avinfo(self.file.path)
         if 'audio' not in d and 'video' not in d:
             if not self.raw_file and os.path.exists(self.file.path):
