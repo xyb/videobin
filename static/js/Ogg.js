@@ -30,7 +30,7 @@ if (typeof Ogg == "undefined") {
 /*
  * check if we are running internet explorer
  */
-Ogg.webkit = ( navigator.vendor && navigator.userAgent.search(/WebKit/) );
+Ogg.webkit = ( navigator.vendor && navigator.userAgent.search(/WebKit/) > 0);
 
 Ogg.ie = function() {
   if(this.webkit)
