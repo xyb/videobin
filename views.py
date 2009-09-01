@@ -68,11 +68,11 @@ def upload_progress(request):
         data = cache.get(cache_key)
         d = {}
         if data:
-            d['speed'] = oxlib.formatNumber(data['speed'], 'b/s', 'b/s') # kb/s
-            d['size'] = oxlib.formatNumber(data['length'], 'B', 'B')
-            d['received'] = oxlib.formatBytes(data['uploaded'])
-            d['eta'] = oxlib.formatDuration(int(data['eta'] * 1000), milliseconds=False)
-            d['precents'] =  "%d" % int(int(data['uploaded'])*100/int(data['length']))
+            d['speed'] = oxlib.formatNumber(data.get('speed', 0), 'b/s', 'b/s') # kb/s
+            d['size'] = oxlib.formatNumber(data.get('length', 0), 'B', 'B')
+            d['received'] = oxlib.formatBytes(data.get('uploaded', 0))
+            d['eta'] = oxlib.formatDuration(int(data.get('eta', 0) * 1000), milliseconds=False)
+            d['precents'] =  "%d" % int(int(data.get('uploaded', 0))*100/int(data.get('length', 1)))
 
             template = loader.get_template('progressbar.html')
             context = Context(d)
