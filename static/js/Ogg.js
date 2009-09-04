@@ -220,7 +220,7 @@ Ogg.init = function() {
   this.theora = true;
   if (this.webkit) {
     var video = document.createElement('video');
-	if (video.canPlayType && video.canPlayType("video/ogg;codecs='theora,vorbis'") == 'probably') {
+	if (video.canPlayType && video.canPlayType('video/ogg;codecs="theora,vorbis"') == 'probably') {
         this.theora = true;
 	} else {
         this.theora = false;
