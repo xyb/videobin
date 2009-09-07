@@ -58,25 +58,6 @@ MEDIA_URL = '/v/'
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/admin/media/'
 
-# Make this unique, creates random key first at first time.
-#SECRET_KEY = '245on223al1=87lg9kf%%m1%pwky&bu8so6r&az)l076gdftg4'
-try:
-    SECRET_KEY
-except NameError:
-    SECRET_FILE = os.path.join(PROJECT_ROOT, 'secret.txt')
-    try:
-        SECRET_KEY = open(SECRET_FILE).read().strip()
-    except IOError:
-        try:
-            from random import choice
-            SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
-            secret = file(SECRET_FILE, 'w')
-            secret.write(SECRET_KEY)
-            secret.close()
-        except IOError:
-            Exception('Please create a %s file with random characters to generate your secret key!' % SECRET_FILE)
-
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
@@ -127,4 +108,22 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+# Make this unique, creates random key first at first time.
+#SECRET_KEY = '245on223al1=87lg9kf%%m1%pwky&bu8so6r&az)l076gdftg4'
+try:
+    SECRET_KEY
+except NameError:
+    SECRET_FILE = os.path.join(PROJECT_ROOT, 'secret.txt')
+    try:
+        SECRET_KEY = open(SECRET_FILE).read().strip()
+    except IOError:
+        try:
+            from random import choice
+            SECRET_KEY = ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
+            secret = file(SECRET_FILE, 'w')
+            secret.write(SECRET_KEY)
+            secret.close()
+        except IOError:
+            Exception('Please create a %s file with random characters to generate your secret key!' % SECRET_FILE)
 
