@@ -173,6 +173,8 @@ def add(request):
               video.title = title
             video.done = True
             video.save()
+            if request.POST.get('api', False):
+                return HttpResponse(request.build_absolute_uri(video.get_absolute_url()), content_type="text/plain")
             return HttpResponseRedirect(video.get_absolute_url())
 
     #no upload
