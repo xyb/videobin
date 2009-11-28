@@ -6,7 +6,7 @@ import os
 from os.path import basename, splitext, dirname, exists, join
 
 from django.core.cache import cache
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, Http404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -21,8 +21,11 @@ from videobin.utils.shortcuts import render_to_json_response
 
 
 def get_video_or_404(binId, videoId):
-    #FIXME: check that video belongs to bin
-    return get_object_or_404(models.Video, pk=int(videoId, 36))
+    bin = get_object_or_404(models.Bin, pk=int(binId, 36))
+    video = get_object_or_404(models.Video, pk=int(videoId, 36))
+    if video.bin == bin:
+        return video
+    raise Http404
 
 def view(request, binId, videoId):
     video = get_video_or_404(binId, videoId)
