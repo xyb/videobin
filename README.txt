@@ -5,7 +5,8 @@ A development version can be started by running python manage.py runserver
 
 You need:
   python (2.5 or 2.6)             apt-get install python
-  Django 1.1 or later             http://www.djangoproject.com/download/
+  Django 1.1 or later             http://www.djangoproject.com/download/ or apt-get install python-django
+  django-south                    easy_install South or apt-get install python-django-south
   BitTornado                      apt-get install bittornado
   python-oxlib                    bzr branch http://code.0xdb.org/python-oxlib 
   transmissionrpc                 easy_install transmissionrpc
