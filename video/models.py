@@ -10,10 +10,13 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 
 from oxlib import to36, formatDuration, formatBytes, avinfo, createTorrent
+import oxlib.torrent
 
 from videobin.bin.models import Bin
 
 from theoraenc import TheoraEnc
+import transmission
+
 
 def absolute_url(url):
     from django.contrib.sites.models import Site
@@ -37,6 +40,7 @@ class Video(models.Model):
     sha1 = models.CharField(max_length=120, blank=True)
     duration = models.IntegerField(default=-1)
     size = models.IntegerField(default=-1)
+    info_hash = models.CharField(blank=True, max_length=40)
     video_codec = models.CharField(blank=True, max_length=200)
     video_bitrate = models.CharField(blank=True, max_length=200)
     framerate = models.CharField(blank=True, max_length=200)
@@ -60,6 +64,10 @@ class Video(models.Model):
         self.bin.updated = datetime.now()
         self.bin.save()
         super(Video, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        transmission.removeTorrent(self.info_hash)
+        super(Video, self).delete(*args, **kwargs)
 
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.bin.title)
@@ -199,6 +207,9 @@ class Video(models.Model):
             comment=settings.TORRENT_COMMENT,
         )
         createTorrent(self.file.path, settings.ANNOUNCE_URL, cfg)
+        self.info_hash = oxlib.torrent.getInfoHash(self.torrent.path)
+        self.save()
+        transmission.addTorrent(self.torrent.path)
 
     def encode(self):
         inputFile = self.raw_file.path

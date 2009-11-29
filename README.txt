@@ -8,7 +8,11 @@ You need:
   Django 1.1 or later             http://www.djangoproject.com/download/
   BitTornado                      apt-get install bittornado
   python-oxlib                    bzr branch http://code.0xdb.org/python-oxlib 
+  transmissionrpc                 easy_install transmissionrpc
+  Transmission Daemon             apt-get install transmission-daemon
   ffmpeg2theora 0.25 or later     http://v2v.cc/~j/ffmpeg2theora/
+
+Adjust settings.py 
 
 VideoBin is release under the GPL 3 or later
 

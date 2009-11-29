@@ -10,10 +10,11 @@ class Command(BaseCommand):
     """
     seed vides.
     """
-    help = 'encode videos in queue.'
+    help = 'start transmission-daemon and load all videos'
     args = ''
 
     def handle(self, **options):
-        from videobin.video import btclient
-        btclient.runClient()
+        from videobin.video import transmission
+        transmission.startDaemon()
+        transmission.seedAllVideos()
 
