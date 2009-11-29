@@ -49,18 +49,17 @@ def addTorrent(torrent_file):
             traceback.print_exc()
 
 def isSeeding(info_hash):
+    info_hash = info_hash.lower()
     try:
         tc = connect()
-        torrents = tc.info()
+        torrents = tc.info(info_hash)
     except:
-        torrents = []
+        torrents = False
         if DEBUG:
             import traceback
             traceback.print_exc()
-    info_hash = info_hash.lower()
-    for t in torrents:
-        if torrents[t].fields['hashString'].lower() == info_hash:
-            return True
+    if torrents:
+        return True
     return False
 
 def seedAllVideos():
