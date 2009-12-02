@@ -7,6 +7,7 @@ from django.http import HttpResponseNotFound
 
 urlpatterns = patterns('videobin.video.views',
     (r'^.*com.fluendo.player.Cortado', lambda request: HttpResponseNotFound()),
+    (r'^.*PortMixerProvider.class', lambda request: HttpResponseNotFound()),
     (r'(?P<binId>.+)/(?P<videoId>.+).iframe.html$', 'iframe'),
     (r'(?P<binId>.+)/(?P<videoId>.+).ogg$', 'video'),
     (r'(?P<binId>.+)/(?P<videoId>.+).html$', 'view'),
