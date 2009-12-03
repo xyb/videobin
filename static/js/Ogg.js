@@ -230,7 +230,7 @@ Ogg.init = function() {
   for(i = 0; i < VideoElements.length; i++) {
     var v = VideoElements[i];
     if(this.theora && v.play) {
-      if(v.getAttribute('autoplay')) {
+      if(v.hasAttribute('autoplay')) {
         v.isPlaying = true;
       }
     }
@@ -240,7 +240,7 @@ Ogg.init = function() {
           v.getAttribute('id'),
           v.getAttribute('width'),
           v.getAttribute('height'),
-          v.getAttribute('autoplay'),
+          v.hasAttribute('autoplay'),
           v.getAttribute('length')
       );
       var p = v.parentNode;
