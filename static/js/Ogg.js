@@ -73,7 +73,7 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
     ' <param name="video" value="true" /> '+
     ' <param name="audio" value="true" /> '+
     ' <param name="seekable" value="auto" /> '+
-    ' <param name="showStatus" value="hide" /> '+
+    ' <param name="showStatus" value="auto" /> '+
     ' <param name="bufferSize" value="200" /> '+
     ' <param name="autoPlay" value="' + autoplay + '" /> '+
     ' <strong>Your browser does not support HTML5 Video. Get a modern browser like <a href="http://www.mozilla.com/firefox">Firefox 3.5</a>.</strong>' +
@@ -174,10 +174,10 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
       'video': 'true',
       'audio': 'true',
       'seekable': 'auto',
-      'showStatus': 'hide',
+      'showStatus': 'auto',
       'autoPlay': autoplay,
       'duration': video_duration,
-      'bufferSize': '200'
+      'bufferSize': '500'
     }
     for(name in params){
       var p = document.createElement('param');
