@@ -214,7 +214,7 @@ Ogg.VideoElement = function(url, id, width, height, autoplay, seconds) {
 
 Ogg.init = function() {
   if(typeof(OggCortadoLocation) == 'undefined')
-    this.CortadoLocation = '/static/cortado.g08b94fe.jar';
+    this.CortadoLocation = '/static/cortado.g4bdec5b.jar';
   else
     this.CortadoLocation = OggCortadoLocation;
   this.theora = true;
