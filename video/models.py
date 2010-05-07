@@ -56,6 +56,9 @@ class Video(models.Model):
     torrent = models.FileField(upload_to=lambda v, f: video_name(v, f) + '.torrent', blank=True)
     still = models.FileField(upload_to=lambda v, f: video_name(v, f).replace('.ogg', '.jpg'), blank=True)
     done = models.BooleanField(default=False)
+    disabled = models.BooleanField(default=False)
+    reason_disabled = models.TextField(blank=True, default='')
+
 
     class Meta:
         db_table = u'video'
