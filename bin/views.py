@@ -29,7 +29,7 @@ def bins(request):
     return render_to_response('bins.html', context)
 
 def bin(request, binId):
-    bin = models.Bin.objects.get(id=int(binId, 36))
+    bin = get_object_or_404(models.Bin, pk=int(binId, 36))
     if bin.videos.count() > 0:
         video = bin.videos.all()[0]
         return HttpResponseRedirect(video.get_absolute_url())
@@ -37,7 +37,7 @@ def bin(request, binId):
     return render_to_response('bin.html', context)
 
 def opml(request, binId):
-    bin = models.Bin.objects.get(id=int(binId, 36))
+    bin = get_object_or_404(models.Bin, pk=int(binId, 36))
     opml = ET.Element('opml')
     opml.attrib['version'] = '2.0'
     head = ET.SubElement(opml, "head")
@@ -130,7 +130,7 @@ def atom_entry(video):
     return entry
 
 def atom(request, binId):
-    bin = models.Bin.objects.get(id=int(binId, 36))
+    bin = get_object_or_404(models.Bin, id=int(binId, 36))
     feed = ET.Element("feed")
     feed.attrib['xmlns'] = 'http://www.w3.org/2005/Atom'
     feed.attrib['xmlns:media'] = 'http://search.yahoo.com/mrss'
