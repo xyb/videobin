@@ -24,6 +24,6 @@ urlpatterns += patterns('videobin.bin.views',
     (r'(?P<binId>.+).atom', 'atom'),
     (r'(?P<binId>.+).miro', 'opml'),
     (r'(?P<binId>.+).opml', 'opml'),
-    (r'(?P<binId>.+)$', 'bin'),
+    (r'(?P<binId>[a-zA-Z0-9]+)$', 'bin'),
 )
 
