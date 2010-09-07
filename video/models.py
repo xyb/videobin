@@ -159,7 +159,7 @@ class Video(models.Model):
         return fname
 
     def loadMetadata(self):
-        if not self.file and os.path.exists(self.raw_file.path):
+        if not self.file and self.raw_file and os.path.exists(self.raw_file.path):
             self.encoding = True
             self.save()
             return
@@ -167,7 +167,7 @@ class Video(models.Model):
         d = avinfo(self.file.path)
         if 'audio' not in d and 'video' not in d:
             if not self.raw_file and os.path.exists(self.file.path):
-                #FIXME: this does not work like that with django fileds
+                self.raw_file.name = self.file.name + '.upload'
                 os.rename(self.file.path, self.raw_file.path)
                 self.encoding = True
                 self.save()
