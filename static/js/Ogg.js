@@ -224,24 +224,23 @@ Ogg.init = function() {
   } else {
       this.theora = false;
   }
-
+  if(this.theora)
+    return;
   var VideoElements = document.getElementsByTagName("video");
   for(i = 0; i < VideoElements.length; i++) {
     var v = VideoElements[i];
-    if(!this.theora) {
-      var video = this.VideoElement(
-          v.getAttribute('src'), 
-          v.getAttribute('id'),
-          v.getAttribute('width'),
-          v.getAttribute('height'),
-          v.hasAttribute('autoplay'),
-          v.getAttribute('length')
-      );
-      var p = v.parentNode;
-      p.removeChild(v);
-      p.appendChild(video);
-      i--;
-    }
+    var video = this.VideoElement(
+        v.getAttribute('src'), 
+        v.getAttribute('id'),
+        v.getAttribute('width'),
+        v.getAttribute('height'),
+        v.hasAttribute('autoplay'),
+        v.getAttribute('length')
+    );
+    var p = v.parentNode;
+    p.removeChild(v);
+    p.appendChild(video);
+    i--;
   }
 };
 
