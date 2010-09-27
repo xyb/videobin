@@ -217,24 +217,18 @@ Ogg.init = function() {
     this.CortadoLocation = '/static/cortado.g4bdec5b.jar';
   else
     this.CortadoLocation = OggCortadoLocation;
-  this.theora = true;
-  if (this.webkit) {
-    var video = document.createElement('video');
-	if (video.canPlayType && video.canPlayType('video/ogg;codecs="theora,vorbis"') == 'probably') {
-        this.theora = true;
-	} else {
-        this.theora = false;
-	}
+
+  var v = document.createElement('video');
+  if (v) {
+      this.theora = !!(v.canPlayType && v.canPlayType('video/ogg; codecs="theora, vorbis"').replace(/no/, ''));
+  } else {
+      this.theora = false;
   }
+
   var VideoElements = document.getElementsByTagName("video");
   for(i = 0; i < VideoElements.length; i++) {
     var v = VideoElements[i];
-    if(this.theora && v.play) {
-      if(v.hasAttribute('autoplay')) {
-        v.isPlaying = true;
-      }
-    }
-    else {
+    if(!this.theora) {
       var video = this.VideoElement(
           v.getAttribute('src'), 
           v.getAttribute('id'),
