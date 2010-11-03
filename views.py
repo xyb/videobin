@@ -34,6 +34,10 @@ def code(request):
     context = RequestContext(request, {})
     return render_to_response('code.html', context)
 
+def api(request):
+    context = RequestContext(request, {})
+    return render_to_response('api.html', context)
+
 def feedback(request):
     if request.method == 'POST':
         subject =  'VideoBin Feedback'

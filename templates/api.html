@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>VideoBin API</title>
+<style>
+h2 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 16px;
+}
+h3 {
+    font-weight: bold;
+    margin-top: 8px;
+}
+table {
+  width: 600px;
+}
+.even {
+  background-color: #ddd;
+}
+.odd {
+  background-color: #eee;
+}
+td {
+    padding: 2px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+  <h1>API</h1>
+  <div style="width: 600px;margin: auto; text-align: left">
+  <h2>Add Video</h2>
+    You can upload videos to Videobin with a simple HTTP POST request.<br>
+    Send a multipart POST request to <b>http://videobin.org/add</b>
+
+    <table>
+        <tr class="odd"><td>videoFile</td><td>(required)</td><td>video to upload</td></tr>
+        <tr class="even"><td>title</td><td>(optional)</td><td>title of video</td></tr>
+        <tr class="odd"><td>description</td><td>(optional)</td><td>description of video</td></tr>
+        <tr class="even"><td>api</td><td>(optional)</td><td>set to 1 to get text/plain response with url to video page instead of redirect</td></tr>
+        <tr class="odd"><td>bin</td><td>(optional)</td><td>id of bin to post video to.
+                                               This only works if you send the right <b>vbk</b> cookie</td></tr>
+
+
+    </table>
+    In order to edit or delete the video you have to save the cookie <b>vbk</b> and send it with your next requests.
+
+  <h2>Edit video</h2>
+    Send a multipart POST request to <b>http://videobin.org/binID/videoId/edit</b>
+    <br>This only works if you send the right <b>vbk</b> cookie with your requests.
+    <table>
+        <tr class="odd"><td>title</td><td><td>change title of video</td></tr>
+        <tr class="even"><td>description</td><td><td>change description of video</td></tr>
+        <tr class="odd"><td>binTitle</td><td><td>change title of bin</td></tr>
+        <tr class="even"><td>writeable</td><td><td>set to 1 to allow others to edit title/description</td></tr>
+    </table>
+
+  <h2>User Settings</h2>
+    Send a multipart POST request to <b>http://videobin.org/settings</b>
+    <br>This only works if you send the right <b>vbk</b> cookie with your requests.
+    <table>
+        <tr class="odd"><td>email</td><td><td>email of user, can be used to recover session cookie</td></tr>
+    </table>
+
+  <h2>Examples</h2>
+  <div>
+    <h3>Python</h3>
+    look at <a href="http://code.activestate.com/recipes/146306/">http://code.activestate.com/recipes/146306/</a>
+
+    <h3>Java</h3>
+    You will need:
+    <ul>
+        <li>http://james.apache.org/download.cgi#Apache_Mime4J
+        <li>http://hc.apache.org/downloads.cgi
+        <li>http://commons.apache.org/net/ 
+    </ul>
+    <pre>
+
+HttpClient client = new DefaultHttpClient();
+client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+URI url = null;
+try {
+    url = new URI("http://videobin.org/add");
+} catch (URISyntaxException e) {
+    e.printStackTrace();
+}
+HttpPost        post   = new HttpPost( url );
+MultipartEntity entity = new MultipartEntity( HttpMultipartMode.BROWSER_COMPATIBLE );
+
+File file = new File(latestTempVideoFile);
+entity.addPart("videoFile", new FileBody(file));
+
+try {
+    entity.addPart( "api", new StringBody( "1", "text/plain",Charset.forName( "UTF-8" )));
+} catch (IllegalCharsetNameException e) {
+    e.printStackTrace();
+} catch (UnsupportedCharsetException e) {
+    e.printStackTrace();
+} catch (UnsupportedEncodingException e) {
+    e.printStackTrace();
+}
+
+post.setEntity( entity );
+
+// get response
+String response = null;
+try {
+    response = EntityUtils.toString( client.execute( post ).getEntity(), "UTF-8" );
+} catch (ParseException e) {
+    e.printStackTrace();
+} catch (ClientProtocolException e) {
+    e.printStackTrace();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+
+client.getConnectionManager().shutdown();
+
+Log.d(TAG, " got back " + response); 
+    </pre>
+  </div>
+  </div>
+{% endblock %}
+
