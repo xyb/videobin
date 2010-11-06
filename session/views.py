@@ -32,10 +32,13 @@ def recover(request, key):
         #merge old sessions
         settings = models.getUserSettings(request.session.session_key)
         if settings.email_address:
+            email = settings.email_address
             for s in models.UserSettings.objects.filter(email_address=settings.email_address):
                 if s.user_key != request.session.session_key:
                     Bin.objects.filter(user_key=s.user_key).update(user_key=request.session.session_key)
                 s.delete()
+            settings.email_address = email
+            settings.save()
 
     return HttpResponseRedirect('/bins')
 
