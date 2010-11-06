@@ -5,6 +5,7 @@
    <style>
     .Q {
       font-weight: bold;
+      padding-top: 8px;
     }
     .A {
     }
@@ -12,11 +13,21 @@
 {% endblock %}
 
 {% block content %}
-    <div style="width:460px;margin-left: auto; margin-right: auto;">
+    <div style="width:480px;margin-left: auto; margin-right: auto;">
     <h1>Help</h1>
     <div class="Q">What format should videos be in?</div>
-    <div class="A">most video format are supported, if you want to avoid server side transcoding, the recommended resolution is:
-    <b>512 x 288</b> for 16:9 material and <b>448 x 336</b> for 4:3 material. Videos have to be encoded in Ogg Theora / Vorbis. <a href="/help/encoding">more info on video encoding</a>
+    <div class="A">The easiest is to install <a href="http://firefogg.org/">Firefogg</a>.
+    <br>Otherwise you can also upload most video formats, if you want to avoid server side transcoding, the recommended resolution is:
+    <b>512 x 288</b> for 16:9 material and <b>448 x 336</b> for 4:3 material. Videos have to be encoded in Ogg Theora / Vorbis. <br><a href="/help/encoding">more info on video encoding</a>
+    </div>
+    <div class="Q">Is there a time or size limit?</div>
+    <div class="A">If you use Firefogg there is no limit, otherwise videos have to be less than 500MB.
+    </div>
+    <div class="Q">Will videos stay up forever?</div>
+    <div class="A">Unless you delete them they will stay up forever. At some point in the future we might delete videos that have never been watched or not watched for a long time. If you <a href="/bins">add your email</a>, your video will not be removed without letting you know.
+    </div>
+    <div class="Q">Why is my question not listed here?</div>
+    <div class="A">If you have a question that should be added here, please <a href="/feedback">let us know</a>.
     </div>
     </div>
 {% endblock %}
