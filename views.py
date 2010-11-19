@@ -13,7 +13,7 @@ from django.utils import feedgenerator
 from django.core.mail import send_mail
 from django.core.cache import cache
 
-import oxlib
+import ox
 
 from utils.shortcuts import render_to_json_response
 
@@ -72,10 +72,10 @@ def upload_progress(request):
         data = cache.get(cache_key)
         d = {}
         if data:
-            d['speed'] = oxlib.formatNumber(data.get('speed', 0), 'b/s', 'b/s') # kb/s
-            d['size'] = oxlib.formatNumber(data.get('length', 0), 'B', 'B')
-            d['received'] = oxlib.formatBytes(data.get('uploaded', 0))
-            d['eta'] = oxlib.formatDuration(int(data.get('eta', 0) * 1000), milliseconds=False)
+            d['speed'] = ox.formatNumber(data.get('speed', 0), 'b/s', 'b/s') # kb/s
+            d['size'] = ox.formatNumber(data.get('length', 0), 'B', 'B')
+            d['received'] = ox.formatBytes(data.get('uploaded', 0))
+            d['eta'] = ox.formatDuration(int(data.get('eta', 0) * 1000), milliseconds=False)
             d['precents'] =  "%d" % int(int(data.get('uploaded', 0))*100/int(data.get('length', 1)))
 
             template = loader.get_template('progressbar.html')

@@ -9,8 +9,8 @@ from django.db import models
 from django.conf import settings
 from django.core.files.base import ContentFile
 
-from oxlib import to36, formatDuration, formatBytes, avinfo, createTorrent
-import oxlib.torrent
+from ox import to36, formatDuration, formatBytes, avinfo, createTorrent
+import ox.torrent
 
 from videobin.bin.models import Bin
 
@@ -210,7 +210,7 @@ class Video(models.Model):
             comment=settings.TORRENT_COMMENT,
         )
         createTorrent(self.file.path, settings.ANNOUNCE_URL, cfg)
-        self.info_hash = oxlib.torrent.getInfoHash(self.torrent.path)
+        self.info_hash = ox.torrent.getInfoHash(self.torrent.path)
         self.save()
         transmission.addTorrent(self.torrent.path)
 

@@ -7,7 +7,7 @@ import time
 import base64
 
 import transmissionrpc
-import oxlib.torrent
+import ox.torrent
 from django.conf import settings
 
 import models
@@ -38,7 +38,7 @@ def addTorrent(torrent_file):
     f = open(torrent_file)
     torrent_data = base64.b64encode(f.read())
     f.close()
-    info_hash = oxlib.torrent.getInfoHash(torrent_file)
+    info_hash = ox.torrent.getInfoHash(torrent_file)
     try:
         tc = connect()
         if not isSeeding(info_hash):
