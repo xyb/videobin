@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     (r'^r/(?P<key>.*)$', "videobin.session.views.recover"),
     (r'^recover/post$', "videobin.session.views.recover_request"),
     (r'^recover$', "videobin.session.views.recover_sent"),
+    (r'^recover/failed$', "videobin.session.views.recover_failed"),
     (r'^settings$', "videobin.session.views.settings"),
     (r'^progress$', "videobin.views.upload_progress"),
     # Uncomment the next line to enable the admin:

@@ -15,7 +15,7 @@ from django.utils import feedgenerator
 import xml.etree.ElementTree as ET
 
 import models
-from videobin.session.models import getUserSettings
+from videobin.session.models import getUserSettings, UserSettings
 
 def index(request):
     bins = models.Bin.objects.filter(user_key=request.session.session_key).order_by("-updated")[:5]
@@ -25,7 +25,10 @@ def index(request):
 def bins(request):
     bins = models.Bin.objects.filter(user_key=request.session.session_key)
     settings = getUserSettings(request.session.session_key)
-    context = RequestContext(request, {'bins': bins, 'settings': settings})
+    many_emails = False
+    if settings.email_address:
+        many_emails = UserSettings.objects.filter(email_address=settings.email_address).count() > 1
+    context = RequestContext(request, {'bins': bins, 'settings': settings, 'many_emails': many_emails})
     return render_to_response('bins.html', context)
 
 def bin(request, binId):

@@ -27,13 +27,25 @@ $(document).ready(function() {
     You already uploaded videos? If not you can <a href="/">do that now</a>.<br />
     If you did, enter your email to recover your account:<br />
     <form action="/recover/post" method="POST">
-        <input value="{{settings.email_address}}" name="email" /><input type="submit" value="recover" />
+        <input value="{{settings.email_address}}" name="email">
+        <input type="submit" value="recover">
     </form>
     {% endif %}
+    {% if bins %}
     <div id="userSettings" py:if="videobins">
         Your email address: <input id="email_address" value="{{settings.email_address}}" /><br />
         (allows you to recover access to your videos)
     </div>
+    {% endif %}
+    {% if many_emails %}
+    <div id="userSettings" py:if="videobins">
+    There seam to be more accounts with your email.
+    <form action="/recover/post" method="POST">
+        <input value="{{settings.email_address}}" type="hidden" name="email">
+        <input type="submit" value="merge accounts">
+    </form>
+    </div>
+    {% endif %}
 
 {% endblock %}
 

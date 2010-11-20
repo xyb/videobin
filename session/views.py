@@ -1,18 +1,20 @@
 # Create your views here.
+import uuid
+import hashlib
+
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from django.conf import settings as videobin_settings
 from django.core.mail import send_mail
-
-from videobin.bin.models import Bin
-from videobin.utils.shortcuts import render_to_json_response
-
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.template import loader, Context
 
 import models
+
+from videobin.bin.models import Bin
+from videobin.utils.shortcuts import render_to_json_response
 
 
 def recover(request, key):
@@ -39,17 +41,20 @@ def recover(request, key):
                 s.delete()
             settings.email_address = email
             settings.save()
-
-    return HttpResponseRedirect('/bins')
+        return HttpResponseRedirect('/bins')
+    return HttpResponseRedirect('/recover/failed')
 
 def recover_request(request):
     email = request.POST.get('email', None)
     if email:
         q = models.UserSettings.objects.filter(email_address = email)
         if q.count() > 0:
-            key = q[0].user_key
-            if key == request.session.session_key:
-                return HttpResponseRedirect('/bins')
+            key = hashlib.sha1(str(uuid.uuid1())).hexdigest()
+            recover_user = models.getUserSettings(key)
+            recover_user.email_address = email
+            recover_user.save()
+            for u in q:
+                Bin.objects.filter(user_key=u.user_key).update(user_key=key)
             #send recovery mail
             template = loader.get_template('recover_mail.txt')
             context = Context({
@@ -59,11 +64,17 @@ def recover_request(request):
             message = template.render(context)
             send_mail(subject, message, videobin_settings.CONTACT_EMAIL, [email, ])
             return HttpResponseRedirect('/recover')
+        else:
+            return HttpResponseRedirect('/recover/failed')
     return HttpResponseRedirect('/')
 
 def recover_sent(request):
     context = RequestContext(request, {})
     return render_to_response('recover.html', context)
+
+def recover_failed(request):
+    context = RequestContext(request, {})
+    return render_to_response('recover_failed.html', context)
 
 def settings(request):
     response = dict(result=False)
