@@ -109,6 +109,9 @@ TRANSMISSON_PORT=9091
 TRANSMISSON_USER='transmission'
 TRANSMISSON_PASSWORD='transmission'
 
+SHARE_RAW_TORRENT = True
+SEED_RAW_TORRENT = False
+
 #overwrite default settings with local settings
 try:
     from local_settings import *

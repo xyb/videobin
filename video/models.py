@@ -54,6 +54,7 @@ class Video(models.Model):
     file = models.FileField(upload_to=video_name, blank=True)
     raw_file = models.FileField(upload_to=lambda v, f: video_name(v, f) + '.upload', blank=True)
     torrent = models.FileField(upload_to=lambda v, f: video_name(v, f) + '.torrent', blank=True)
+    raw_torrent = models.FileField(upload_to=lambda v, f: video_name(v, f) + '.raw.torrent', blank=True, null=True)
     still = models.FileField(upload_to=lambda v, f: video_name(v, f).replace('.ogg', '.jpg'), blank=True)
     done = models.BooleanField(default=False)
     disabled = models.BooleanField(default=False)
@@ -104,6 +105,10 @@ class Video(models.Model):
 
     def torrentLink(self):
         url = "%s.torrent" % self.linkBase()
+        return absolute_url(url)
+
+    def rawTorrentLink(self):
+        url = "%s.raw.torrent" % self.linkBase()
         return absolute_url(url)
 
     def videoLink(self):
@@ -213,6 +218,16 @@ class Video(models.Model):
         self.info_hash = ox.torrent.getInfoHash(self.torrent.path)
         self.save()
         transmission.addTorrent(self.torrent.path)
+        if settings.SHARE_RAW_TORRENT:
+            self.raw_torrent.name = video_name(self, "") + ".raw.torrent"
+            self.save()
+            cfg = dict(
+                target=self.raw_torrent.path,
+                comment=settings.TORRENT_COMMENT,
+            )
+            createTorrent(self.raw_file.path, settings.ANNOUNCE_URL, cfg)
+            if settings.SEED_RAW_TORRENT:
+                transmission.addTorrent(self.raw_torrent.path)
 
     def encode(self):
         inputFile = self.raw_file.path

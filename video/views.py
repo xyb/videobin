@@ -31,7 +31,10 @@ def view(request, binId, videoId):
     video = get_video_or_404(binId, videoId)
     ownsBin = (request.session.session_key == video.bin.user_key)
     canAddVideo = (video.bin.writeable or ownsBin)
-    context = RequestContext(request, {'video': video, 'ownsBin': ownsBin, 'canAddVideo': canAddVideo})
+    shareRawTorrent = settings.SHARE_RAW_TORRENT and video.raw_torrent
+    context = RequestContext(request, {'video': video, 'ownsBin': ownsBin,
+                                       'canAddVideo': canAddVideo,
+                                       'shareRawTorrent': shareRawTorrent})
     return render_to_response('video.html', context)
 
 def iframe(request, binId, videoId):
@@ -51,6 +54,17 @@ def torrent(request, binId, videoId):
     torrentName = video.downloadFilename().encode('utf-8') + '.torrent'
     response['Content-Disposition'] = 'attachement; filename="%s"' % torrentName
     return response
+
+def raw_torrent(request, binId, videoId):
+    if settings.SHARE_RAW_TORRENT:
+        video = get_video_or_404(binId, videoId)
+        response = HttpResponse(video.raw_torrent, mimetype="application/x-bittorrent")
+        response['Content-Type'] = "application/x-bittorrent"
+        torrentName = video.downloadFilename().encode('utf-8') + '.raw.torrent'
+        response['Content-Disposition'] = 'attachement; filename="%s"' % torrentName
+        return response
+    else:
+        raise Http404
 
 def edit(request, binId, videoId):
     video = get_video_or_404(binId, videoId)

@@ -106,7 +106,9 @@
                 <p>
                   <b>Download Video:</b> 
                   <a href="{{video.torrentLink}}">Torrent</a>,
-                  <a href="{{video.videoLink}}">Direct Link</a>
+                  <a href="{{video.videoLink}}">Direct Link</a>{% if shareRawTorrent %},
+                    <a href="{{video.rawTorrentLink}}">Torrent of Uploaded File</a>
+                  {% endif %}
                 </p>
                 <p>
                   <b>Subscribe</b>: <a href="{{video.bin.atomLink}}">Atom Feed</a>, <a href="{{video.bin.miroLink}}">Subscribe Miro</a>
