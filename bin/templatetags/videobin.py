@@ -26,3 +26,11 @@ def format_since(d):
             return formatDuration(1000 * int(since.seconds / 60) * 60, verbosity=2) + " ago"
     return d.strftime('%Y-%m-%d %H:%M')
 
+
+@register.filter
+@stringfilter
+def is_autoplay(embed, autoplay):
+    if not autoplay:
+        embed = embed.replace('iframe.html', 'iframe.html?autoplay=0')
+    return embed
+

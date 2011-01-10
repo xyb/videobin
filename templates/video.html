@@ -96,7 +96,7 @@
                 {% endif %}
             {% endifnotequal %}
             <div id="video">
-              {{video.embedElement|safe}}
+              {{video.embedElement|is_autoplay:autoplay|safe}}
             </div>
             {% if video.formatInfoHtml  %}
             <div>
@@ -119,7 +119,7 @@
                 </div>
                 <div>
                   <b>Embed:</b>
-                  <input type="text" id="embedLink" value="{{video.embedElement}}" />
+                  <input type="text" id="embedLink" value="{{video.embedElement|is_autoplay:autoplay}}" />
                 </div>
             </div>
           </div>

@@ -32,14 +32,22 @@ def view(request, binId, videoId):
     ownsBin = (request.session.session_key == video.bin.user_key)
     canAddVideo = (video.bin.writeable or ownsBin)
     shareRawTorrent = settings.SHARE_RAW_TORRENT and video.raw_torrent
-    context = RequestContext(request, {'video': video, 'ownsBin': ownsBin,
-                                       'canAddVideo': canAddVideo,
-                                       'shareRawTorrent': shareRawTorrent})
+    context = RequestContext(request, {
+        'autoplay': request.GET.get('autoplay', '1') == '1',
+        'video': video,
+        'ownsBin': ownsBin,
+        'canAddVideo': canAddVideo,
+        'shareRawTorrent': shareRawTorrent
+    })
     return render_to_response('video.html', context)
 
 def iframe(request, binId, videoId):
     video = get_video_or_404(binId, videoId)
-    context = RequestContext(request, {'video': video})
+    
+    context = RequestContext(request, {
+        'autoplay': request.GET.get('autoplay', '1') == '1',
+        'video': video,
+    })
     return render_to_response('iframe.html', context)
 
 def video(request, binId, videoId):

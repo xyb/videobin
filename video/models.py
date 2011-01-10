@@ -39,7 +39,7 @@ class Video(models.Model):
     seeding = models.BooleanField(default=False)
     sha1 = models.CharField(max_length=120, blank=True)
     duration = models.IntegerField(default=-1)
-    size = models.IntegerField(default=-1)
+    size = models.BigIntegerField(default=-1)
     info_hash = models.CharField(blank=True, max_length=40)
     video_codec = models.CharField(blank=True, max_length=200)
     video_bitrate = models.CharField(blank=True, max_length=200)

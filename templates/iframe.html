@@ -37,7 +37,7 @@
     {{video.encodingStatus}}
   </div>
 {% else %}
-  <video src="{{video.videoLink}}" id="video"  width="{{video.displayWidth}}" height="{{video.displayHeight}}" autoplay controls></video>
+  <video src="{{video.videoLink}}" id="video"  width="{{video.displayWidth}}" height="{{video.displayHeight}}" {% if autoplay %}autoplay{% endif %} controls></video>
 {% endif %}
 {% endif %}
     </body>
