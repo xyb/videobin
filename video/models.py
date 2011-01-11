@@ -52,7 +52,7 @@ class Video(models.Model):
     samplerate = models.IntegerField(default=-  1)
     channels = models.IntegerField(default=-1)
     file = models.FileField(upload_to=video_name, blank=True)
-    raw_file = models.FileField(upload_to=lambda v, f: video_name(v, f) + '.upload', blank=True)
+    raw_file = models.FileField(upload_to=lambda v, f: video_name(v, f) + '.upload', null=True, blank=True)
     torrent = models.FileField(upload_to=lambda v, f: video_name(v, f) + '.torrent', blank=True)
     raw_torrent = models.FileField(upload_to=lambda v, f: video_name(v, f) + '.raw.torrent', blank=True, null=True)
     still = models.FileField(upload_to=lambda v, f: video_name(v, f).replace('.ogg', '.jpg'), blank=True)
@@ -225,7 +225,10 @@ class Video(models.Model):
                 target=self.raw_torrent.path,
                 comment=settings.TORRENT_COMMENT,
             )
-            createTorrent(self.raw_file.path, settings.ANNOUNCE_URL, cfg)
+            if self.raw_file:
+                createTorrent(self.raw_file.path, settings.ANNOUNCE_URL, cfg)
+            else:
+                createTorrent(self.file.path, settings.ANNOUNCE_URL, cfg)
             if settings.SEED_RAW_TORRENT:
                 transmission.addTorrent(self.raw_torrent.path)
 
