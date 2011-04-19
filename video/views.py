@@ -51,15 +51,13 @@ def iframe(request, binId, videoId):
         'autoplay': request.GET.get('autoplay', '1') == '1',
         'video': video,
     })
-    return render_to_response('iframe.html', context)
+    models.Video.objects.filter(pk=int(videoId, 36)).update(viewed=F('viewed')+1)
+    response = render_to_response('iframe.html', context)
+    response['Cache-Control'] = 'no-cache'
+    return response
 
 def video(request, binId, videoId):
     video = get_video_or_404(binId, videoId)
-    #only increment counter once per session,
-    #clients can make range requests for seeking
-    content_range = request.META.get('HTTP_RANGE', 'bytes=0-')
-    if content_range == 'bytes=0-':
-        models.Video.objects.filter(pk=int(videoId, 36)).update(viewed=F('viewed')+1)
     if not video.encoding and not video.disabled:
         return HttpFileResponse(video.file.path)
     else:
