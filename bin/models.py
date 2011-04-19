@@ -3,7 +3,7 @@
 # Written 2009 by j@mailb.org
 
 from django.db import models
-from oxlib import to36
+from ox import to36
 
 from videobin.utils.shortcuts import absolute_url
 

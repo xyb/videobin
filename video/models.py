@@ -8,6 +8,7 @@ from datetime import datetime
 from django.db import models
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.db.models.signals import pre_delete
 
 from ox import to36, formatDuration, formatBytes, avinfo, createTorrent
 import ox.torrent
@@ -60,6 +61,7 @@ class Video(models.Model):
     disabled = models.BooleanField(default=False)
     reason_disabled = models.TextField(blank=True, default='')
 
+    viewed = models.IntegerField(default=0)
 
     class Meta:
         db_table = u'video'
@@ -69,8 +71,26 @@ class Video(models.Model):
         self.bin.save()
         super(Video, self).save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
+    def cleanup(self):
         transmission.removeTorrent(self.info_hash)
+        if self.file:
+            self.file.delete()
+        if self.raw_file:
+            self.raw_file.delete()
+        if self.still:
+            self.still.delete()
+        if self.torrent:
+            self.torrent.delete()
+        if self.raw_torrent:
+            self.raw_torrent.delete()
+        try:
+            os.rmdir(os.path.join(settings.MEDIA_ROOT, ox.to36(self.id)))
+        except OSError:
+            pass
+
+
+    def delete(self, *args, **kwargs):
+        self.cleanup()
         super(Video, self).delete(*args, **kwargs)
 
     def __unicode__(self):
@@ -114,10 +134,6 @@ class Video(models.Model):
     def videoLink(self):
         url = "%s.ogg" % self.linkBase()
         return absolute_url(url)
-
-    def staticVideoLink(self):
-        #FIXME: why is MEDIA_URL ignored?
-        return absolute_url(self.file.url)
 
     def embedElement(self):
         url = "%s.iframe.html" % self.linkBase()
@@ -245,8 +261,11 @@ class Video(models.Model):
           self.encoding_failed = True
           self.save()
 
-    def viewed(self):
-        return self.views.all().count()
+def delete_video(sender, **kwargs):
+    video = kwargs['instance']
+    video.cleanup()
+pre_delete.connect(delete_video, sender=Video)
+
 
 class VideoViews(models.Model):
     video = models.ForeignKey(Video, related_name='views')

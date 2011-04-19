@@ -17,3 +17,12 @@ def getUserSettings(user_key):
         settings.save()
     return settings
 
+def update_or_create_user(user_key, email_address):
+    qs = UserSettings.objects.filter(email_address=email_address)
+    if qs.count() > 0:
+        return qs[0].user_key
+    else:
+        settings = UserSettings.objects.create(user_key=user_key)
+        settings.email_address = email_address
+        settings.save()
+        return user_key

@@ -31,7 +31,7 @@ urlpatterns = patterns('',
     (r'^settings$', "videobin.session.views.settings"),
     (r'^progress$', "videobin.views.upload_progress"),
     # Uncomment the next line to enable the admin:
-    (r'^admin/(.*)', admin.site.root),
+    (r'^admin/', include(admin.site.urls)),
 )
 
 if settings.DEBUG:

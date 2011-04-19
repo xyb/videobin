@@ -13,11 +13,14 @@ from django.conf import settings
 from django import forms
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from django.utils import simplejson
-from oxlib import stripTags
+from ox import stripTags
+from django.db.models import F
+from ox.django.http import HttpFileResponse
 
 import models
 
 from videobin.utils.shortcuts import render_to_json_response 
+from videobin.session.models import update_or_create_user
 
 
 def get_video_or_404(binId, videoId):
@@ -52,8 +55,15 @@ def iframe(request, binId, videoId):
 
 def video(request, binId, videoId):
     video = get_video_or_404(binId, videoId)
-    video.views.create()
-    return HttpResponseRedirect(video.staticVideoLink())
+    #only increment counter once per session,
+    #clients can make range requests for seeking
+    content_range = request.META.get('HTTP_RANGE', 'bytes=0-')
+    if content_range == 'bytes=0-':
+        models.Video.objects.filter(pk=int(videoId, 36)).update(viewed=F('viewed')+1)
+    if not video.encoding and not video.disabled:
+        return HttpFileResponse(video.file.path)
+    else:
+        raise Http404
 
 def torrent(request, binId, videoId):
     video = get_video_or_404(binId, videoId)
@@ -162,6 +172,9 @@ def add(request):
         if bin:
             if not bin.writeable and bin.user_key != user_key:
                 bin = None
+        email = request.POST.get('email', None)
+        if email:
+            user_key = update_or_create_user(user_key, email)
 
         if request.POST.get('firefogg', False):
             binTitle = '___title___'

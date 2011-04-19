@@ -31,11 +31,15 @@ def about(request):
     return render_to_response('about.html', context)
  
 def code(request):
-    context = RequestContext(request, {})
+    context = RequestContext(request, {
+        'url': request.build_absolute_uri("/")
+    })
     return render_to_response('code.html', context)
 
 def api(request):
-    context = RequestContext(request, {})
+    context = RequestContext(request, {
+        'url': request.build_absolute_uri("/")
+    })
     return render_to_response('api.html', context)
 
 def feedback(request):

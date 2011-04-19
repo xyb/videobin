@@ -32,12 +32,13 @@ td {
   <div style="width: 600px;margin: auto; text-align: left">
   <h2>Add Video</h2>
     You can upload videos to Videobin with a simple HTTP POST request.<br>
-    Send a multipart POST request to <b>http://videobin.org/add</b>
+    Send a multipart POST request to <b>{{url}}add</b>
 
     <table>
         <tr class="odd"><td>videoFile</td><td>(required)</td><td>video to upload</td></tr>
         <tr class="even"><td>title</td><td>(optional)</td><td>title of video</td></tr>
         <tr class="odd"><td>description</td><td>(optional)</td><td>description of video</td></tr>
+        <tr class="odd"><td>email</td><td>(optional)</td><td>if provided users are able to delete videos by logging in with that email</td></tr>
         <tr class="even"><td>api</td><td>(optional)</td><td>set to 1 to get text/plain response with url to video page instead of redirect</td></tr>
         <tr class="odd"><td>bin</td><td>(optional)</td><td>id of bin to post video to.
                                                This only works if you send the right <b>vbk</b> cookie</td></tr>
@@ -47,7 +48,7 @@ td {
     In order to edit or delete the video you have to save the cookie <b>vbk</b> and send it with your next requests.
 
   <h2>Edit video</h2>
-    Send a multipart POST request to <b>http://videobin.org/binID/videoId/edit</b>
+    Send a multipart POST request to <b>{{url}}binID/videoId/edit</b>
     <br>This only works if you send the right <b>vbk</b> cookie with your requests.
     <table>
         <tr class="odd"><td>title</td><td><td>change title of video</td></tr>
@@ -57,7 +58,7 @@ td {
     </table>
 
   <h2>User Settings</h2>
-    Send a multipart POST request to <b>http://videobin.org/settings</b>
+    Send a multipart POST request to <b>{{url}}settings</b>
     <br>This only works if you send the right <b>vbk</b> cookie with your requests.
     <table>
         <tr class="odd"><td>email</td><td><td>email of user, can be used to recover session cookie</td></tr>
@@ -65,9 +66,17 @@ td {
 
   <h2>Examples</h2>
   <div>
+    <h3>CURL</h3>
+    You can use curl to upload videos:
+    <code><pre>
+    curl -F"api=1" -F"email=you@example.com" -F"videoFile=@video.ogv" {{url}}add
+    </pre></code>
     <h3>Python</h3>
-    look at <a href="http://code.activestate.com/recipes/146306/">http://code.activestate.com/recipes/146306/</a>
-
+    <ul>
+    <li> you can use pycurl or
+    <li>look at <a href="http://code.activestate.com/recipes/146306/">http://code.activestate.com/recipes/146306/</a>.
+    <li>Its also possible to use <a href="http://pypi.python.org/pypi/python-firefogg">python-firefogg</a>.
+    </ul>
     <h3>Java</h3>
     You will need:
     <ul>
@@ -82,7 +91,7 @@ client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion
 
 URI url = null;
 try {
-    url = new URI("http://videobin.org/add");
+    url = new URI("{{url}}add");
 } catch (URISyntaxException e) {
     e.printStackTrace();
 }

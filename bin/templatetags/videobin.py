@@ -8,7 +8,7 @@ from django.contrib.sites.models import Site
 from django.template import Library, Node
 from django.template.defaultfilters import stringfilter
 
-from oxlib import formatDuration
+from ox import formatDuration
 
 register = Library()
 
