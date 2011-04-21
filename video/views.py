@@ -51,7 +51,8 @@ def iframe(request, binId, videoId):
         'autoplay': request.GET.get('autoplay', '1') == '1',
         'video': video,
     })
-    models.Video.objects.filter(pk=int(videoId, 36)).update(viewed=F('viewed')+1)
+    if not video.encoding and not video.disabled:
+        models.Video.objects.filter(pk=int(videoId, 36)).update(viewed=F('viewed')+1)
     response = render_to_response('iframe.html', context)
     response['Cache-Control'] = 'no-cache'
     return response
