@@ -69,6 +69,8 @@ class Video(models.Model):
     def save(self, *args, **kwargs):
         self.bin.updated = datetime.now()
         self.bin.save()
+        if not self.title.strip():
+            self.title = 'Untitled'
         super(Video, self).save(*args, **kwargs)
 
     def cleanup(self):
