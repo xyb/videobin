@@ -24,6 +24,7 @@ class TheoraEnc:
             )
         if self.outputFile:
             cmd += ' -o "%s"' % self.outputFile.replace('"', '\"')
+        cmd += '--no-upscaling -F30'
         cmd += ' >/dev/null 2>&1'
         return cmd
 
