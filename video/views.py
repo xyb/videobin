@@ -48,7 +48,7 @@ def iframe(request, binId, videoId):
     video = get_video_or_404(binId, videoId)
     
     context = RequestContext(request, {
-        'autoplay': request.GET.get('autoplay', '1') == '1',
+        'autoplay': request.GET.get('autoplay', '0') == '1',
         'video': video,
     })
     if not video.encoding and not video.disabled:
