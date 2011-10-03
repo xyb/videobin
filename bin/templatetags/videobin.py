@@ -30,7 +30,7 @@ def format_since(d):
 @register.filter
 @stringfilter
 def is_autoplay(embed, autoplay):
-    if not autoplay:
-        embed = embed.replace('iframe.html', 'iframe.html?autoplay=0')
+    if autoplay:
+        embed = embed.replace('iframe.html', 'iframe.html?autoplay=1')
     return embed
 
