@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+import os
+
+root_dir = os.path.normpath(os.path.abspath(os.path.dirname(__file__)))
+os.chdir(root_dir)
+
+#using virtualenv's activate_this.py to reorder sys.path
+activate_this = os.path.join(root_dir, '..', 'bin', 'activate_this.py')
+execfile(activate_this, dict(__file__=activate_this))
 from django.core.management import execute_manager
 try:
     import settings # Assumed to be in the same directory.
