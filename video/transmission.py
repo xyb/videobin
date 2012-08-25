@@ -38,7 +38,7 @@ def addTorrent(torrent_file):
     f = open(torrent_file)
     torrent_data = base64.b64encode(f.read())
     f.close()
-    info_hash = ox.torrent.getInfoHash(torrent_file)
+    info_hash = ox.torrent.get_info_hash(torrent_file)
     try:
         tc = connect()
         if not isSeeding(info_hash):

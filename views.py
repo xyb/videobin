@@ -76,10 +76,10 @@ def upload_progress(request):
         data = cache.get(cache_key)
         d = {}
         if data:
-            d['speed'] = ox.formatNumber(data.get('speed', 0), 'b/s', 'b/s') # kb/s
-            d['size'] = ox.formatNumber(data.get('length', 0), 'B', 'B')
-            d['received'] = ox.formatBytes(data.get('uploaded', 0))
-            d['eta'] = ox.formatDuration(int(data.get('eta', 0) * 1000), milliseconds=False)
+            d['speed'] = ox.format_number(data.get('speed', 0), 'b/s', 'b/s') # kb/s
+            d['size'] = ox.format_number(data.get('length', 0), 'B', 'B')
+            d['received'] = ox.format_bytes(data.get('uploaded', 0))
+            d['eta'] = ox.format_duration(int(data.get('eta', 0) * 1000), milliseconds=False)
             d['precents'] =  "%d" % int(int(data.get('uploaded', 0))*100/int(data.get('length', 1)))
 
             template = loader.get_template('progressbar.html')

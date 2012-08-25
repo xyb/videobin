@@ -233,7 +233,7 @@ class Video(models.Model):
             comment=settings.TORRENT_COMMENT,
         )
         createTorrent(self.file.path, settings.ANNOUNCE_URL, cfg)
-        self.info_hash = ox.torrent.getInfoHash(self.torrent.path)
+        self.info_hash = ox.torrent.get_info_hash(self.torrent.path)
         self.save()
         transmission.addTorrent(self.torrent.path)
         if settings.SHARE_RAW_TORRENT:
