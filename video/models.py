@@ -10,7 +10,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db.models.signals import pre_delete
 
-from ox import to36, formatDuration, formatBytes, avinfo, createTorrent
+from ox import to36, format_duration, format_bytes, avinfo, create_torrent
 import ox.torrent
 
 from videobin.bin.models import Bin
@@ -170,7 +170,7 @@ class Video(models.Model):
           codec_info = self.audio_codec
 
         info += "%s .:. %s .:. %s" % \
-          (formatDuration(self.duration, milliseconds=False), formatBytes(self.size),
+          (format_duration(self.duration, milliseconds=False), format_bytes(self.size),
            codec_info)
         if self.duration < 0 or self.encoding:
           return ''
@@ -232,7 +232,7 @@ class Video(models.Model):
             target=self.torrent.path,
             comment=settings.TORRENT_COMMENT,
         )
-        createTorrent(self.file.path, settings.ANNOUNCE_URL, cfg)
+        create_torrent(self.file.path, settings.ANNOUNCE_URL, cfg)
         self.info_hash = ox.torrent.get_info_hash(self.torrent.path)
         self.save()
         transmission.addTorrent(self.torrent.path)
@@ -244,9 +244,9 @@ class Video(models.Model):
                 comment=settings.TORRENT_COMMENT,
             )
             if self.raw_file:
-                createTorrent(self.raw_file.path, settings.ANNOUNCE_URL, cfg)
+                create_torrent(self.raw_file.path, settings.ANNOUNCE_URL, cfg)
             else:
-                createTorrent(self.file.path, settings.ANNOUNCE_URL, cfg)
+                create_torrent(self.file.path, settings.ANNOUNCE_URL, cfg)
             if settings.SEED_RAW_TORRENT:
                 transmission.addTorrent(self.raw_torrent.path)
 
