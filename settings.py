@@ -101,7 +101,7 @@ SESSION_COOKIE_AGE = 86400000
 
 #videobin related settings
 CONTACT_EMAIL="feedback@videobin.org"
-ANNOUNCE_URL="http://papaja.v2v.cc:6970/announce"
+ANNOUNCE_URL="udp://tracker.openbittorrent.com:80"
 TORRENT_COMMENT='http://videobin.org'
 
 TRANSMISSON_HOST='localhost'
