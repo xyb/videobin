@@ -8,7 +8,7 @@ from django.contrib.sites.models import Site
 from django.template import Library, Node
 from django.template.defaultfilters import stringfilter
 
-from ox import formatDuration
+from ox import format_duration
 
 register = Library()
 
@@ -21,9 +21,9 @@ def format_since(d):
     since = datetime.now() - d
     if not since.days:
         if since.seconds < 60:
-            return formatDuration(1000 * since.seconds, verbosity=2) + " ago"
+            return format_duration(1000 * since.seconds, verbosity=2) + " ago"
         else:
-            return formatDuration(1000 * int(since.seconds / 60) * 60, verbosity=2) + " ago"
+            return format_duration(1000 * int(since.seconds / 60) * 60, verbosity=2) + " ago"
     return d.strftime('%Y-%m-%d %H:%M')
 
 
