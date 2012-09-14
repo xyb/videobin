@@ -13,7 +13,7 @@ from django.conf import settings
 from django import forms
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from django.utils import simplejson
-from ox import stripTags
+from ox import strip_tags
 from django.db.models import F
 from ox.django.http import HttpFileResponse
 
@@ -96,16 +96,16 @@ def edit(request, binId, videoId):
       return render_to_text_response(response)
     response = 'invalid input'
     if 'title' in request.POST:
-      video.title = stripTags(request.POST['title'])
+      video.title = strip_tags(request.POST['title'])
       video.save()
       response = video.title
     elif 'description' in request.POST:
       #should do better than that, allow some html here
-      video.description = stripTags(request.POST['description'])
+      video.description = strip_tags(request.POST['description'])
       video.save()
       response = video.description.replace('\n', '<br />')
     elif 'binTitle' in request.POST:
-      video.bin.title = stripTags(request.POST['binTitle'])
+      video.bin.title = strip_tags(request.POST['binTitle'])
       video.save()
       response = video.bin.title
     elif 'writeable' in request.GET:
