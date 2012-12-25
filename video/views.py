@@ -145,7 +145,8 @@ def upload(request, binId, videoId):
         if form.is_valid() and canEditVideo:
             f = form.cleaned_data['chunk']
             response = dict(result=1, resultUrl=request.build_absolute_uri(video.get_absolute_url()))
-            if not video.save_chunk(f.read(), f.name):
+
+            if not video.save_chunk(f.read()):
                 response['result'] = 'failed'
             elif form.cleaned_data['done']:
                 video.done = True

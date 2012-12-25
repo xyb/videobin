@@ -102,7 +102,8 @@ class Video(models.Model):
         if not self.done:
             if not self.file:
                 self.file.save(name, ContentFile(chunk))
-                self.title = os.path.splitext(os.path.basename(name))[0]
+                if not self.title:
+                    self.title = os.path.splitext(os.path.basename(name))[0]
                 if self.bin.title == '___title___':
                     self.bin.title = self.title
                     self.bin.save()

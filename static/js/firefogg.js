@@ -1,12 +1,12 @@
-$(document).ready(function() {
-  function updateProgress(progress, status) {
-      $('#progress').css({
-        width: Math.round(progress*200) + 'px'
-      });
-      $('#progressstatus').html(
-        Math.round(progress*100) + ' % - ' + status
-      );
-  }
+function updateProgress(progress, status) {
+  $('#progress').css({
+    width: Math.round(progress*200) + 'px'
+  });
+  $('#progressstatus').html(
+    Math.round(progress*100) + ' % - ' + status
+  );
+}
+$(function() {
   $('#firefogg').hide();
   if(typeof(Firefogg) != 'undefined') {
     $('#addVideo').hide();
@@ -56,21 +56,33 @@ $(document).ready(function() {
       });
       postData = JSON.stringify(postData);
       ogg.encode(options,
-        function(data) { //encoding done
+        function(data, file) { //encoding done
           data = JSON.parse(data);
           if(data.progress == 1) {
-            ogg.chunk_upload(add_url, postData, function(data) {
-              //done
-              data = JSON.parse(data);
-              if(data.resultUrl) {
-                $('#statusBar').html('Upload succeeded.');
-                document.location.href = data.resultUrl;
-              } else {
-                $('#statusBar').html('Upload failed.');
+            var uploadData= {
+                'firefogg': 1,
+                'title': file.name.replace(/\.[^.]+$/, ''),
+              },
+              bin = $('#addVideoBin').val();
+            if (bin) {
+                uploadData.bin = bin;
+            }
+            ChunkUploader({
+              file: file,
+              url: add_url,
+              data: uploadData,
+              progress: function(data) {
+                updateProgress(data.progress, 'uploading');
+              },
+              callback: function(result) {
+                  var data = JSON.parse(result.responseText);
+                  if(data.resultUrl) {
+                    $('#statusBar').html('Upload succeeded.');
+                    document.location.href = data.resultUrl;
+                  } else {
+                    $('#statusBar').html('Upload failed.');
+                  }
               }
-            }, function(data) { //upload progress
-              data = JSON.parse(data);
-              updateProgress(data.progress, 'uploading');
             });
           } else {
               $('#progressstatus').html("Encoding failed.");
