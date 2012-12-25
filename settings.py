@@ -91,9 +91,6 @@ INSTALLED_APPS = (
     'videobin.session',
 )
 
-FILE_UPLOAD_HANDLERS = ('videobin.middleware.UploadProgressCachedHandler.UploadProgressCachedHandler', ) + \
-                       global_settings.FILE_UPLOAD_HANDLERS
-
 FILE_UPLOAD_PERMISSIONS=0644
 
 SESSION_COOKIE_NAME = "vbk"
