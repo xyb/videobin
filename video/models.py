@@ -98,10 +98,15 @@ class Video(models.Model):
     def __unicode__(self):
         return "%s (%s)" % (self.title, self.bin.title)
 
-    def save_chunk(self, chunk, name='video.ogv'):
+    def save_chunk(self, chunk, name='video.ogv', raw=False):
         if not self.done:
-            if not self.file:
-                self.file.save(name, ContentFile(chunk))
+            if raw:
+                _file = self.raw_file
+            else:
+                _file = self.file
+            print raw, _file
+            if not _file:
+                _file.save(name, ContentFile(chunk))
                 if not self.title:
                     self.title = os.path.splitext(os.path.basename(name))[0]
                 if self.bin.title == '___title___':
@@ -109,7 +114,7 @@ class Video(models.Model):
                     self.bin.save()
                 self.save()
             else:
-                f = open(self.file.path, 'a')
+                f = open(_file.path, 'a')
                 f.write(chunk)
                 f.close()
             return True

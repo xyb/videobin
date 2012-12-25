@@ -137,6 +137,8 @@ def upload(request, binId, videoId):
     """
     Return json indicating success if chunk upload
     """
+    ogg = request.GET.get('ogg', False) == '1'
+    raw = request.GET.get('raw', False) == '1'
     if request.method == 'POST':
         video = get_video_or_404(binId, videoId)
         form = VideoChunkForm(request.POST, request.FILES)
@@ -146,7 +148,7 @@ def upload(request, binId, videoId):
             f = form.cleaned_data['chunk']
             response = dict(result=1, resultUrl=request.build_absolute_uri(video.get_absolute_url()))
 
-            if not video.save_chunk(f.read()):
+            if not video.save_chunk(f.read(), raw=raw):
                 response['result'] = 'failed'
             elif form.cleaned_data['done']:
                 video.done = True
@@ -176,7 +178,9 @@ def add(request):
         if email:
             user_key = update_or_create_user(user_key, email)
 
-        if request.POST.get('firefogg', False):
+        firefogg = request.POST.get('firefogg', False)
+        chunk = request.POST.get('chunk', False)
+        if firefogg or chunk:
             binTitle = '___title___'
             if not bin:
                 bin = models.Bin(title=binTitle, description='', user_key=user_key)
@@ -186,7 +190,13 @@ def add(request):
             video = models.Video(title=title, description=description, bin=bin)
             video.encoding = True
             video.save()
-            response = dict(result=1, uploadUrl=request.build_absolute_uri("%s.chunk" % video.linkBase()))
+            upload_url = request.build_absolute_uri("%s.chunk" % video.linkBase())
+            is_ogg = request.POST.get('name', '').split('.')[-1] in ('ogv', 'ogg') or firefogg
+            if chunk and not is_ogg:
+                upload_url += '?raw=1'
+            else:
+                upload_url += '?ogg=1'
+            response = dict(result=1, uploadUrl=upload_url)
             return render_to_json_response(response)
         # Save any files that were uploaded (ignoring empty form fields)
         if 'videoFile' in request.FILES:

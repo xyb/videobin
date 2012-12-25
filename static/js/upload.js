@@ -17,8 +17,9 @@ $(function() {
         updateProgress(0, 'uploading');
         var file = $('#videoFile')[0].files[0],
             data= {
-                'firefogg': 1,
+                'chunk': 1,
                 'title': file.name.replace(/\.[^.]+$/, ''),
+                'name': file.name
             },
             bin = $('#addVideoBin').val();
         if (bin) {
