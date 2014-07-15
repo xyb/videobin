@@ -14,7 +14,7 @@ register = Library()
 
 @register.filter
 def with_domain(url):
-    return 'http://%s%s' % (Site.objects.get_current().domain, url) 
+    return '//%s%s' % (Site.objects.get_current().domain, url)
 
 @register.filter
 def format_since(d):

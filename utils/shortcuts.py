@@ -15,5 +15,5 @@ def render_to_json_response(dictionary, content_type="text/json"):
 
 def absolute_url(url):
     from django.contrib.sites.models import Site
-    return 'http://%s%s' % (Site.objects.get_current().domain, url) 
+    return '//%s%s' % (Site.objects.get_current().domain, url)
 

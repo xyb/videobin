@@ -21,7 +21,7 @@ import transmission
 
 def absolute_url(url):
     from django.contrib.sites.models import Site
-    return 'http://%s%s' % (Site.objects.get_current().domain, url) 
+    return '//%s%s' % (Site.objects.get_current().domain, url)
 
 def video_name(video, filename):
     hid = to36(video.id)
@@ -211,12 +211,12 @@ class Video(models.Model):
                 if key == 'duration':
                     value = float(value) * 1000   
                 setattr(self, key, value)
-        if d['video']:
+        if d.get('video'):
             for key in ('width', 'height', 'framerate'):
                 if key in d['video'][0]:
                     setattr(self, key, d['video'][0][key])
             self.video_codec = d['video'][0]['codec'].capitalize()
-        if d['audio']:
+        if d.get('audio'):
             for key in ('channels', 'samplerate'):
                 if key in d['audio'][0]:
                     setattr(self, key, d['audio'][0][key])
