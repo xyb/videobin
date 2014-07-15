@@ -104,7 +104,6 @@ class Video(models.Model):
                 _file = self.raw_file
             else:
                 _file = self.file
-            print raw, _file
             if not _file:
                 _file.save(name, ContentFile(chunk))
                 if not self.title:
