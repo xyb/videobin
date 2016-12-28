@@ -47,10 +47,12 @@ def feedback(request):
         subject =  'VideoBin Feedback'
         message = request.POST.get('message', '')
         from_email = request.POST.get('email', '')
+        message = 'From: %s\n%s' % (from_email, message)
+        from_email = settings.CONTACT_EMAIL
         admins = [settings.CONTACT_EMAIL, ]
         if subject and message and from_email:
             #try:
-            send_mail(subject, message, from_email, admins)
+            send_mail(subject, message, settings.CONTACT_EMAIL, admins)
             #except BadHeaderError:
             #    return HttpResponse('Invalid header found.')
             return HttpResponseRedirect('/feedback/thanks')
